@@ -5,7 +5,10 @@
         <title>Test</title>
     </head>
     <body>
-<? echo "Hello World" ?>
+<?
+echo "Hello World";
+include("include.inc");
+?>
     </body>
 </html>
 
