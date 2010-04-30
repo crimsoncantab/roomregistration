@@ -1,6 +1,6 @@
 #!/usr/local/bin/php
 <?
-require_once("include.inc");
+require_once("inc/include.inc");
 template_start_html();
 template_head("Homepage");
 template_start_body("A title");
