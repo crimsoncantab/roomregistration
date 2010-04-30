@@ -1,3 +1,3 @@
 <?
-echo "This file has been included";
+require_once("htmltemplate.inc");
 ?>
