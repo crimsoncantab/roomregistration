@@ -1,14 +1,13 @@
 #!/usr/local/bin/php
-
-<html>
-    <head>
-        <title>Test</title>
-    </head>
-    <body>
 <?
-echo "Hello World";
-include("include.inc");
+require_once("include.inc");
+template_start_html();
+template_head("Homepage");
+template_start_body("A title");
 ?>
-    </body>
-</html>
-
+<div>
+    Here is some text.
+</div>
+<?
+template_end();
+?>
