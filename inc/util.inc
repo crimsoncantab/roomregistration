@@ -31,13 +31,19 @@ function mysql_safe($query, $conn, $params=false) {
 
 
 #misc
-function redirect($url, $die=false) {
+function redirect($page, $die=true) {
     $host  = $_SERVER['HTTP_HOST'];
     $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
-    $extra = 'mypage.php';
-    header("Location: http:#$host$uri/$extra");
+    header("Location: http:#$host$uri/$page");
 }
-function must_be_logged_in($redir) {
-
+function redir_if_logged_in($redir) {
+    if (is_logged_in()) {
+        redirect($redir);
+    }
+}
+function redir_if_not_logged_in($redir) {
+    if (!is_logged_in()) {
+        redirect($redir);
+    }
 }
 ?>

@@ -22,6 +22,8 @@ $query_add_res=''; #TODO
 
 #find reservation(s) during certain time interval and for certain room
 #takes room and time interval
+#hmm, we might need a little transaction to help us out here.  we have to check
+#for availability, then add a reservation if possible, all in one swoop.
 $query_curr_res=''; #TODO
 
 
