@@ -1,3 +1,3 @@
 <?
-require_once("htmltemplate.inc");
+	require_once("htmltemplate.inc");
 ?>
