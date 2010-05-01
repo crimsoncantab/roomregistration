@@ -1,8 +1,8 @@
 <?
 $my_sql_svr = "db-courses";
-$my_sql_db = "mcginn";
-$my_sql_usr = "mcginn";
-$my_sql_pwd = "p";
+$my_sql_db = "bendeck";
+$my_sql_usr = "bendeck";
+$my_sql_pwd = "colochas";
 
 $conn = mysql_connect($my_sql_svr, $my_sql_usr, $my_sql_pwd);
 if (!$conn)
