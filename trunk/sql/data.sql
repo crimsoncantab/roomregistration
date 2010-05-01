@@ -121,5 +121,7 @@ INSERT INTO room VALUES
 ;
 
 INSERT INTO events(huid,room,building,date_req,duration,description,date_time,recurring) VALUES
-('11111111','3','MD',NOW(),30,'harvard engineering society', NOW(),NULL);
+('11111111','3','MD',NOW(),30,'harvard engineering society','2010-5-1 14:00:00',NULL),
+('11111111','3','MD',NOW(),30,'harvard engineering society','2010-5-4 13:00:00',NULL),
+('11111111','3','MD',NOW(),30,'harvard engineering society','2010-5-4 15:00:00',NULL);
 
