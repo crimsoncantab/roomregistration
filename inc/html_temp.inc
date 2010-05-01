@@ -39,7 +39,7 @@ function template_start_body($title) {
                     <th id="banner" class="trim">
                         <div id="login">
 <?
-    if (is_logged_in()) { //show login status
+    if (is_logged_in()) { #show login status
 ?>
                             <div>Logged in as <?$_SESSION[$USERNAME] ?>.</div>
                             <div>
@@ -47,7 +47,7 @@ function template_start_body($title) {
                             </div>
 <?
     }
-    else { //make login form
+    else { #make login form
 ?>
                             <form action="login.php" method="post" id="login_form">
                                 <table>

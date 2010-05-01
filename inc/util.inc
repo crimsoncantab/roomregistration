@@ -1,6 +1,6 @@
 <?
 
-//session stuff
+#session stuff
 session_start();
 function is_logged_in() {
     return isset ($_SESSION[$UID]);
@@ -10,10 +10,14 @@ function set_logged_in($username, $uid) {
     $_SESSION[$USERNAME] = $username;
 }
 
-//sql_helpers
+
+#sql_helpers
 function mysql_safe($query, $conn, $params=false) {
     if ($params) {
-        foreach ($params as &$v) { $v = mysql_real_escape_string($v); }    # Escaping parameters
+        foreach ($params as &$v) {
+            $v = mysql_real_escape_string($v);
+        }
+        # Escaping parameters
         # str_replace - replacing ? -> %s. %s is ugly in raw sql query
         # vsprintf - replacing all %s to parameters
         $sql_query = vsprintf( str_replace("?","'%s'",$query), $params );
@@ -23,5 +27,17 @@ function mysql_safe($query, $conn, $params=false) {
     }
 
     return ($sql_query);
+}
+
+
+#misc
+function redirect($url, $die=false) {
+    $host  = $_SERVER['HTTP_HOST'];
+    $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+    $extra = 'mypage.php';
+    header("Location: http:#$host$uri/$extra");
+}
+function must_be_logged_in($redir) {
+
 }
 ?>
