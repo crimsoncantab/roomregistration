@@ -2,5 +2,7 @@
 <?
 # TODO
 #logout user
-header('.');
+include_once 'inc/util.inc';
+unset($_SESSION[$UID]);
+redirect(".");
 ?>
