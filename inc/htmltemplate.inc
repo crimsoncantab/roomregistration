@@ -17,6 +17,7 @@ function template_head($title) {
 ?>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link rel="stylesheet" type="text/css" href="css/style.css" />
         <title><? echo $title; ?></title>
     </head>
 <?
@@ -30,13 +31,10 @@ function template_start_body($banner) {
 ?>
     <body>
         <table id="master">
-            <thead>
                 <tr>
                     <th id="corner" />
                     <th id="banner"><? echo $banner; ?></th>
                 </tr>
-            </thead>
-            <tbody>
                 <tr>
                     <td id="nav">
                         <div>Links</div>
@@ -53,7 +51,6 @@ function template_end() {
 ?>
                     </td>
                 </tr>
-            </tbody>
         </table>
     </body>
 </html>
