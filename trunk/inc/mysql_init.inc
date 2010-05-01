@@ -1,8 +1,6 @@
 <?
-$my_sql_svr = "db-courses";
-$my_sql_db = "bendeck";
-$my_sql_usr = "bendeck";
-$my_sql_pwd = "colochas";
+require_once 'sql_scripts.inc';
+require_once 'vars.inc';
 
 $conn = mysql_connect($my_sql_svr, $my_sql_usr, $my_sql_pwd);
 if (!$conn)
