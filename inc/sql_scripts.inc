@@ -11,7 +11,7 @@
 #mysql_safe($query, $conn, array($var1, $var2));
 
 #authenticates user.  takes username, phash params, returns user info
-$query_auth_user=''; #TODO
+$query_auth_user='';
 
 function authuser($uid,$pwd) {
 	$query='SELECT * FROM users WHERE huid=?';
@@ -42,6 +42,17 @@ function authuser($uid,$pwd) {
 }
 
 
+$query_curr_user_res=''; #TODO
+function currentUserRes($uid) 
+{
+	$query='SELECT * FROM events WHERE huid=?';
+	$result=mysql_safe($query, $conn, array($uid));
+	//echo $result;
+	//print_r(mysql_fetch_array($result));
+	//$data=mysql_fetch_array($result);
+	//return $data;
+	return $result;	
+}
 
 #register user.  takes username, phash, other varibles..
 $query_reg_user=''; #TODO
