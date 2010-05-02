@@ -1,4 +1,5 @@
 <?
+require_once 'util.inc';
 #This file lists all the queries needed.
 #When a query takes parameters, they should be escaped with ?
 #The query should be called with the mysql_safe() function in util.inc,

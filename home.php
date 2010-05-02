@@ -1,6 +1,6 @@
 <?
 	require_once 'inc/util.inc';
-	include_once 'inc/db_init.inc';
+	require_once 'inc/db_init.inc';
 	redir_if_not_logged_in('.');
 	require_once 'inc/html_temp.inc';
 	template_start_html();
