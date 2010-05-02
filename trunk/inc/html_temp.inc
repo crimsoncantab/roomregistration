@@ -39,6 +39,7 @@ function template_start_body($title) {
                     <th id="banner" class="trim">
                         <div id="login">
 <?
+	echo $_SESSION['error'];
     if (is_logged_in()) { #show login status
 ?>
                             <div>Logged in as <? echo $_SESSION['username'] ?>.</div>
@@ -53,14 +54,14 @@ function template_start_body($title) {
                                 <table>
                                     <tr>
                                         <td>
-                                            <span>User</span>
-                                            <input type="text" name="username" value="" size="12"/>
+                                            <span>HUID</span>
+                                            <input type="text" name="uid" value="" size="12"/>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
                                             <span>Pass</span>
-                                            <input type="password" name="password" value="" size="12"/>
+                                            <input type="password" name="pwd" value="" size="12"/>
                                         </td>
                                     </tr>
                                     <tr>
