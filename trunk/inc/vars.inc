@@ -5,10 +5,10 @@ $USERNAME = 'username';
 
 #database variables
 #(for sql scripts, see sql.inc)
-$my_sql_svr = 'localhost';
-$my_sql_db = 'bendeck';
-$my_sql_usr = 'root';
-$my_sql_pwd = 'chjiop1151';
+$my_sql_svr = 'mysql.hcs.harvard.edu';
+$my_sql_db = 'roomres';
+$my_sql_usr = 'roomres';
+$my_sql_pwd = 'usDIhS0IKxk9';
 
 
 #list of links to show up in navbar
