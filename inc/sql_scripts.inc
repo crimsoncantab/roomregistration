@@ -13,7 +13,7 @@
 #authenticates user.  takes username, phash params, returns user info
 $query_auth_user='';
 
-function authuser($uid,$pwd) {
+function authUser($uid,$pwd) {
 	$query='SELECT * FROM users WHERE huid=?';
 	$result=mysql_safe($query, $conn, array($uid));
 	//echo $result;
