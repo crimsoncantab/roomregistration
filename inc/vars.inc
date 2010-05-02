@@ -1,7 +1,7 @@
 <?
-#session variable constants
-$UID = 'uid';
-$USERNAME = 'username';
+//session variable constants
+//$UID = 'uid';
+//$USERNAME = 'username';
 
 #database variables
 #(for sql scripts, see sql.inc)

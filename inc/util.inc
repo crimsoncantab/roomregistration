@@ -4,9 +4,9 @@ session_start();
 function is_logged_in() {
     return isset ($_SESSION['uid']);
 }
-function set_logged_in($uid, $username) {
-    $_SESSION['uid'] = $uid;
-    $_SESSION['username'] = $username;
+function set_logged_in($uid,$username) {
+	$_SESSION['uid'] = $uid;
+	$_SESSION['username'] = $username;
 }
 
 

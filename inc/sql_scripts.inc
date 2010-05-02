@@ -13,6 +13,36 @@
 #authenticates user.  takes username, phash params, returns user info
 $query_auth_user=''; #TODO
 
+function authuser($uid,$pwd) {
+	$query='SELECT * FROM users WHERE huid=?';
+	$result=mysql_safe($query, $conn, array($uid));
+	//echo $result;
+	//print_r(mysql_fetch_array($result));
+	$data=mysql_fetch_array($result);
+	if(mysql_num_rows($result)==0)
+	{
+		$_SESSION['error']="User not in db";
+		return false;
+	}
+	if(strcmp($pwd,$data['pwd']))
+	{
+		//echo $pwd;
+		//echo $result['pwd'];
+		$_SESSION['error']="Invalid password";
+		return false;
+	}
+	else
+	{
+	//	echo "teasdf";
+		unset($_SESSION['error']);
+		set_logged_in($uid,$data['name']);
+		return true;
+	}
+	
+}
+
+
+
 #register user.  takes username, phash, other varibles..
 $query_reg_user=''; #TODO
 

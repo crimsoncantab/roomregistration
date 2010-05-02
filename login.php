@@ -4,11 +4,9 @@
 include_once 'inc/util.inc';
 include_once 'inc/db_init.inc';
 
-# check creditials using POST
-
-# set session
-//set_logged_in($uid, $username);
-
-# send to dashboard
+# check credentials using POST
+authuser($_POST['uid'], $_POST['pwd']);
 redirect('home.php');
+
 ?>
+
