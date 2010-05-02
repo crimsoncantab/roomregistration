@@ -1,6 +1,6 @@
 <?
-require_once 'util.inc';
 require_once 'vars.inc';
+require_once 'util.inc';
 
 function template_start_html() {
 

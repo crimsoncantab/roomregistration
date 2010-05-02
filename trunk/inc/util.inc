@@ -4,7 +4,7 @@ session_start();
 function is_logged_in() {
     return isset ($_SESSION['uid']);
 }
-function set_logged_in($username, $uid) {
+function set_logged_in($uid, $username) {
     $_SESSION['uid'] = $uid;
     $_SESSION['username'] = $username;
 }
@@ -34,6 +34,7 @@ function redirect($page, $die=true) {
     $host  = $_SERVER['HTTP_HOST'];
     $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
     header("Location: http://$host$uri/$page");
+    if ($die) die();
 }
 function redir_if_logged_in($redir) {
     if (is_logged_in()) {
