@@ -26,5 +26,9 @@ $query_add_res=''; #TODO
 #for availability, then add a reservation if possible, all in one swoop.
 $query_curr_res=''; #TODO
 
+#gets information for a particular room
+$query_get_rooms=''; #TODO
 
+#gets intformation for a particular date
+$query_get_date=''; #TODO
 ?>

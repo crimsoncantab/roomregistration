@@ -29,7 +29,7 @@ function mysql_safe($query, $conn, $params=false) {
 }
 
 
-#misc
+#redirects
 function redirect($page, $die=true) {
     $host  = $_SERVER['HTTP_HOST'];
     $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');

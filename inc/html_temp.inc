@@ -65,17 +65,7 @@ function template_start_body($title) {
                                     </tr>
                                     <tr>
                                         <td>
-                                            <table style="width: 100%; border: 0; margin: 0px; padding: 0px; border-collapse: collapse">
-                                                <tr>
-                                                    <td style="text-align: left">
-                                                        <a href="register.php">Register</a>
-                                                    </td>
-                                                    <td style="text-align: right">
-                                                        <input type="submit" value="Login" name="sub"/>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                            
+                                            <input type="submit" value="Login" name="sub"/>
                                         </td>
                                     </tr>
                                 </table>
@@ -89,7 +79,11 @@ function template_start_body($title) {
                 </tr>
                 <tr>
                     <td id="nav" class="trim">
-                        <div>Links</div>
+                        <div>
+<?
+# TODO
+?>
+                        </div>
                     </td>
                     <td id="content">
 <?
