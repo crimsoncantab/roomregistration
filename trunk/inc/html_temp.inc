@@ -39,10 +39,18 @@ function template_start_body($title) {
                     <th id="banner" class="trim">
                         <div id="login">
 <?
-	echo $_SESSION['error'];
+if (isset($_SESSION['error'])){
+?>
+				<div class="error"><?echo $_SESSION['error']; ?></div>
+
+<?
+	unset($_SESSION['error']);
+}
+
+
     if (is_logged_in()) { #show login status
 ?>
-                            <div>Logged in as <? echo $_SESSION['username'] ?>.</div>
+                            <div>Logged in as <? echo $_SESSION['username']; ?>.</div>
                             <div>
                                 <a href="logout.php">Logout</a>
                             </div>

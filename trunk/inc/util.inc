@@ -25,7 +25,7 @@ function mysql_safe($query, $conn, $params=false) {
         $sql_query = mysql_query($query, $conn);    # If no params...
     }
 
-    return ($sql_query);
+    return $sql_query;
 }
 
 
