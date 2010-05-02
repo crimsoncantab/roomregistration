@@ -1,4 +1,3 @@
-#!/usr/local/bin/php
 <?
 # TODO
 require_once 'inc/html_temp.inc';

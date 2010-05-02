@@ -1,5 +1,4 @@
 <?
-
 #session stuff
 session_start();
 function is_logged_in() {
@@ -34,7 +33,7 @@ function mysql_safe($query, $conn, $params=false) {
 function redirect($page, $die=true) {
     $host  = $_SERVER['HTTP_HOST'];
     $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
-    header("Location: http:#$host$uri/$page");
+    header("Location: http://$host$uri/$page");
 }
 function redir_if_logged_in($redir) {
     if (is_logged_in()) {
