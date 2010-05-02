@@ -57,10 +57,10 @@ huid CHAR(8) NOT NULL,
 room VARCHAR(6) NOT NULL,
 building CHAR(2) NOT NULL,
 date_req DATETIME NOT NULL,
-duration INT NOT NULL,
 description VARCHAR(60) NOT NULL,
-date_time DATETIME NOT NULL,
-recurring VARCHAR(20),
+start_time DATETIME NOT NULL,
+end_time DATETIME NOT NULL,
+recurring VARCHAR(10),
 FOREIGN KEY (room,building) REFERENCES room(room_num,building),
 FOREIGN KEY (huid) REFERENCES users(huid)
 ) ENGINE=InnoDB;
