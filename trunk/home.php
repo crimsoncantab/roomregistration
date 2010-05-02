@@ -1,5 +1,7 @@
 <?
 # TODO
+require_once 'inc/util.inc';
+redir_if_not_logged_in('.');
 require_once 'inc/html_temp.inc';
 template_start_html();
 template_head('HRR');
