@@ -8,7 +8,7 @@ redir_if_logged_in("logout.php");
 # check creditials using POST
 
 # set session
-set_logged_in('Test User',5);
+set_logged_in('Test User','5');
 
 # send to dashboard
 redirect('home.php');
