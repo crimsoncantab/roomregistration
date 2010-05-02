@@ -2,11 +2,11 @@
 #session stuff
 session_start();
 function is_logged_in() {
-    return isset ($_SESSION[$UID]);
+    return isset ($_SESSION['uid']);
 }
 function set_logged_in($username, $uid) {
-    $_SESSION[$UID] = $uid;
-    $_SESSION[$USERNAME] = $username;
+    $_SESSION['uid'] = $uid;
+    $_SESSION['username'] = $username;
 }
 
 

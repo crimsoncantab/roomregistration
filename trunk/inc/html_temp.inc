@@ -41,7 +41,7 @@ function template_start_body($title) {
 <?
     if (is_logged_in()) { #show login status
 ?>
-                            <div>Logged in as <?$_SESSION[$USERNAME] ?>.</div>
+                            <div>Logged in as <? echo $_SESSION['username'] ?>.</div>
                             <div>
                                 <a href="logout.php">Logout</a>
                             </div>
