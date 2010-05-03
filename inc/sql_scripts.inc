@@ -25,10 +25,10 @@ $query_auth_page='SELECT * FROM pageperm WHERE page=? AND LOCATE(?, perm) != 0';
 $query_get_links='SELECT page, display FROM pageperm WHERE LOCATE(?, perm) != 0';
 
 #get campuses
-$query_get_campuses='SELECT name FROM campus';
+$query_get_campuses='SELECT id,name FROM campus';
 
 #get buildings
-$query_get_buildings='SELECT name FROM building';
+$query_get_buildings='SELECT id,name FROM building';
 
 #add reservation.  takes room info, other variables...
 #assumes time/location are available
@@ -41,7 +41,7 @@ $query_add_res=''; #TODO
 $query_curr_res=''; #TODO
 
 #gets information for a particular room
-$query_get_rooms=''; #TODO
+$query_get_rooms='SELECT * FROM room WHERE capacity>=? AND capacity<=?'; #TODO
 
 #gets intformation for a particular date
 $query_get_date=''; #TODO
@@ -68,6 +68,38 @@ function authUser($uid,$pwd) {
 		return true;
 	}
 	
+}
+
+function getRooms($capacity,$projector)
+{
+	$query=$GLOBALS['query_get_rooms'];
+	$lbound=$capacity-3;
+	$ubound=$capacity+10;
+	if(!strcmp($projector,"true"))
+	{
+		//echo "tasdfasdf";
+		//echo $capacity;
+		$query .= " AND projector=true";
+	}
+	$result=mysql_safe($query,array($lbound,$ubound));
+	return $result;
+}
+
+
+function getBuildingRooms($building,$capacity,$projector)
+{
+	$query=$GLOBALS['query_get_rooms'];
+	$lbound=$capacity-3;
+	$ubound=$capacity+10;
+	$query .= " AND building=?";
+	if(!strcmp($projector,"true"))
+	{
+		//echo "tasdfasdf";
+		//echo $capacity;
+		$query .= " AND projector=true";
+	}
+	$result=mysql_safe($query,array($lbound,$ubound,$building));
+	return $result;
 }
 
 function get_user_perm() {
