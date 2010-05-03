@@ -11,6 +11,7 @@ INSERT INTO pageperm VALUES
 ('home.php', 'Dashboard', 'ftsbar'),
 ('index.php', 'Home', '0'),
 ('roomreq.php', 'Request Room', 'ftsbar'),
+('room_results.php', 'Room Results', 'ftsbar'),
 ('logout.php', 'Logout', 'ftsbar')
 ;
 

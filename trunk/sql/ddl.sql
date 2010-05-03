@@ -73,3 +73,5 @@ display VARCHAR(32) NOT NULL,
 perm VARCHAR(12) NOT NULL
 ) ENGINE=InnoDB;
 
+
+
