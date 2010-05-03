@@ -43,6 +43,7 @@ body{
 }
 
 #nav {
+    vertical-align: top;
     border: none;
     margin: 0px;
     padding: 5px;
@@ -68,6 +69,7 @@ body{
 
 }
 #content {
+    vertical-align: top;
     border: none;
     margin: 0px;
     padding: 10px;

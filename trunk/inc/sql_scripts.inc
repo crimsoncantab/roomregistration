@@ -19,10 +19,10 @@ $query_auth_user='SELECT * FROM users WHERE huid=?';
 $query_curr_user_res='SELECT * FROM events WHERE huid=?';
 
 #check webpage permissions against a user.
-$query_auth_page='SELECT * FROM pageperm WHERE page=? AND LOCATE(perm, ?) != 0';
+$query_auth_page='SELECT * FROM pageperm WHERE page=? AND LOCATE(?, perm) != 0';
 
 #get available links
-$query_get_links='SELECT page, display FROM pageperm WHERE LOCATE(perm, ?) != 0';
+$query_get_links='SELECT page, display FROM pageperm WHERE LOCATE(?, perm) != 0';
 
 #add reservation.  takes room info, other variables...
 #assumes time/location are available
@@ -93,7 +93,7 @@ function currentUserRes($uid)
 
 function auth_page($filename, $role, $redir) {
     $query=$GLOBALS['query_auth_page'];
-    $result=mysql_safe($query, $filename, $role);
+    $result=mysql_safe($query, array($filename, $role));
     if(mysql_num_rows($result) == 0)
     {
         redirect($redir);
@@ -102,7 +102,7 @@ function auth_page($filename, $role, $redir) {
 
 function get_links($role) {
     $query=$GLOBALS['query_get_links'];
-    $result=mysql_safe($query, $role);
-    return $ret;
+    $result=mysql_safe($query, array($role));
+    return $result;
 }
 ?>
