@@ -30,6 +30,38 @@
 				</td>
 			</tr>
             <tr>
+                <td>*Day: 
+					<select name="month">
+						<option selected></option>
+<?
+						for($i=1;$i<=12;$i++)
+						{
+							echo "<option>";
+							echo $i;
+							echo "</option>";
+						}
+?>
+					</select>
+					<select name="day">
+						<option selected></option>
+<?
+						for($i=1;$i<=31;$i++)
+						{
+							echo "<option>";
+							echo $i;
+							echo "</option>";
+						}
+?>
+					</select>
+                </td>
+            </tr>
+            <tr>
+                <td>*Recurring: 
+					<input type="radio" name="recurring" value="false" checked>No
+					<input type="radio" name="recurring" value="true">Yes
+                </td>
+            </tr>
+            <tr>
                 <td>Projector: 
 					<input type="radio" name="projector" value="false" checked>Don't Care
 					<input type="radio" name="projector" value="true">Yes

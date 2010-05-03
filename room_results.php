@@ -6,6 +6,13 @@
 <div>
 	<? print_r($_SESSION) ?>
 	<? print_r($_GET) ?>
+<?
+	if($_GET['campus']=="")
+		echo "no campus";
+	else
+		echo "campus selected";
+
+?>
 </div>
 
 <?
