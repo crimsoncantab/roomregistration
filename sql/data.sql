@@ -4,7 +4,14 @@ INSERT INTO priv VALUES
 ('s','student_grp',5,false,false),
 ('b','building_mgr',12,true,true),
 ('a','admin_asst',9,true,false),
-('r','sysadmin',15,true,true); 
+('r','sysadmin',15,true,true);
+
+INSERT INTO pageperm VALUES
+('about.php', 'About Us', '0ftsbar'),
+('home.php', 'Dashboard', 'ftsbar'),
+('index.php', 'Home', '0'),
+('logout.php', 'Logout', 'ftsbar')
+;
 
 INSERT INTO users VALUES
 ('11111111','1','faculty1','other','faculty1@harvard.edu','6174951111','f'),

@@ -1,4 +1,3 @@
-
 DROP TABLE IF EXISTS events;
 DROP TABLE IF EXISTS room;
 DROP TABLE IF EXISTS building;
@@ -65,5 +64,9 @@ FOREIGN KEY (room,building) REFERENCES room(room_num,building),
 FOREIGN KEY (huid) REFERENCES users(huid)
 ) ENGINE=InnoDB;
 
-
+CREATE TABLE pageperm(
+page VARCHAR(32) NOT NULL PRIMARY KEY,
+display VARCHAR(32) NOT NULL,
+perm VARCHAR(12)
+)
 

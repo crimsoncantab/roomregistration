@@ -11,7 +11,7 @@ function set_logged_in($uid,$username) {
 
 
 #sql_helpers
-function mysql_safe($query, $conn, $params=false) {
+function mysql_safe($query, $params=false) {
     if ($params) {
         foreach ($params as &$v) {
             $v = mysql_real_escape_string($v);
@@ -20,9 +20,9 @@ function mysql_safe($query, $conn, $params=false) {
         # str_replace - replacing ? -> %s. %s is ugly in raw sql query
         # vsprintf - replacing all %s to parameters
         $sql_query = vsprintf( str_replace("?","'%s'",$query), $params );
-        $sql_query = mysql_query($sql_query. $conn);    # Perfoming escaped query
+        $sql_query = mysql_query($sql_query, $GLOBALS['conn']);    # Perfoming escaped query
     } else {
-        $sql_query = mysql_query($query, $conn);    # If no params...
+        $sql_query = mysql_query($query, $GLOBALS['conn']);    # If no params...
     }
 
     return $sql_query;
@@ -36,14 +36,14 @@ function redirect($page, $die=true) {
     header("Location: http://$host$uri/$page");
     if ($die) die();
 }
-function redir_if_logged_in($redir) {
-    if (is_logged_in()) {
-        redirect($redir);
-    }
-}
-function redir_if_not_logged_in($redir) {
-    if (!is_logged_in()) {
-        redirect($redir);
-    }
-}
+//function redir_if_logged_in($redir) {
+//    if (is_logged_in()) {
+//        redirect($redir);
+//    }
+//}
+//function redir_if_not_logged_in($redir) {
+//    if (!is_logged_in()) {
+//        redirect($redir);
+//    }
+//}
 ?>

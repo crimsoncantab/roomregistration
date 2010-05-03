@@ -1,8 +1,7 @@
 <?
 	require_once 'inc/html_temp.inc';
-	template_start_html();
-	template_head('HRR');
-	template_start_body('Harvard Room Reservation - About Us');
+	$role = get_user_perm();
+        template_start(basename(__FILE__), 'HRR', 'Harvard Room Reservation - About Us', 'home.php');
 ?>
 <div>
     All about us.  We are really cool.

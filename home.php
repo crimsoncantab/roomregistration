@@ -1,14 +1,9 @@
 <?
-	require_once 'inc/util.inc';
-	require_once 'inc/db_init.inc';
-	redir_if_not_logged_in('.');
 	require_once 'inc/html_temp.inc';
-	template_start_html();
-	template_head('HRR');
-	template_start_body('Harvard Room Reservation - Dashboard');
+	$role = get_user_perm();
+        template_start(basename(__FILE__), 'HRR', 'Harvard Room Reservation - Dashboard', '.');
 ?>
 <div>
-	<? print_r($_SESSION) ?><br/>
     Your current reservations:
 <?
  	# this code inspired by http://www.tizag.com/mysqlTutorial/mysql-date.php

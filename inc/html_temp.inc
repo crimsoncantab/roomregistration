@@ -1,6 +1,8 @@
 <?
 require_once 'vars.inc';
 require_once 'util.inc';
+require_once 'inc/db_init.inc';
+require_once 'inc/sql_scripts.inc';
 
 function template_start_html() {
 
@@ -28,7 +30,7 @@ function template_head($title) {
 
 }
 
-function template_start_body($title) {
+function template_start_body($title, $role) {
 
 
 ?>
@@ -88,11 +90,14 @@ if (isset($_SESSION['error'])){
                 </tr>
                 <tr>
                     <td id="nav" class="trim">
-                        <div>
 <?
-# TODO
+    $links = get_links($role);
+    while ($link = mysql_fetch_array($links)) {
 ?>
-                        </div>
+                        <div><a href="<?$link['page']?>"><?$link['display']?></a></div>
+<?
+    }
+?>
                     </td>
                     <td id="content">
 <?
@@ -112,5 +117,13 @@ function template_end() {
  <?
 
 
+}
+
+function template_start($filename, $title, $banner, $redir) {
+	$role = get_user_perm();
+        auth_page(basename($filename), $role, $redir);
+	template_start_html();
+	template_head($title);
+	template_start_body($banner, $role);
 }
 ?>
