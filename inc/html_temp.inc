@@ -94,7 +94,7 @@ if (isset($_SESSION['error'])){
     $links = get_links($role);
     while ($link = mysql_fetch_array($links)) {
 ?>
-                        <div><a href="<?$link['page']?>"><?$link['display']?></a></div>
+                        <div><a href="<?echo $link['page']; ?>"><?echo $link['display']; ?></a></div>
 <?
     }
 ?>
