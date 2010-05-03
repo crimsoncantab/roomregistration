@@ -14,21 +14,62 @@
                     <input type="text" name="uid" value="" size="12"/>
                 </td>
             </tr>
+			<tr>
+				<td>*Time:
+					<select name="time">
+						<option selected></option>
+<?
+						for($i=$GLOBALS['beg_time']; $i<=$GLOBALS['end_time']; $i++)
+						{
+							echo "<option>";
+							echo $i;
+							echo "</option>";
+						}
+?>
+					</select>
+				</td>
+			</tr>
             <tr>
-                <td>*Projector: 
-					<input type="radio" name="projector" value="false" checked>No
+                <td>Projector: 
+					<input type="radio" name="projector" value="false" checked>Don't Care
 					<input type="radio" name="projector" value="true">Yes
                 </td>
             </tr>
-            <tr>
-                <td>*Time: 
-					<input type="radio" name="projector" value="false" checked>No
-					<input type="radio" name="projector" value="true">Yes
-                </td>
-            </tr>
+			<tr>
+				<td>Campus
+					<select name="campus">
+						<option selected></option>
+<?
+						$result=getCampusRegions();
+						while($row = mysql_fetch_array($result))
+						{
+							echo "<option>";
+							echo $row['name'];
+							echo "</option>";
+						}
+?>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>Building
+					<select name="building">
+						<option selected></option>
+<?
+						$result=getBuildings();
+						while($row = mysql_fetch_array($result))
+						{
+							echo "<option>";
+							echo $row['name'];
+							echo "</option>";
+						}
+?>
+					</select>
+				</td>
+			</tr>
             <tr>
                 <td>
-                    <input type="submit" value="Login" name="sub"/>
+                    <input type="submit" value="Submit" name="sub"/>
                 </td>
             </tr>
         </table>
