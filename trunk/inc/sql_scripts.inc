@@ -24,6 +24,12 @@ $query_auth_page='SELECT * FROM pageperm WHERE page=? AND LOCATE(?, perm) != 0';
 #get available links
 $query_get_links='SELECT page, display FROM pageperm WHERE LOCATE(?, perm) != 0';
 
+#get campuses
+$query_get_campuses='SELECT name FROM campus';
+
+#get buildings
+$query_get_buildings='SELECT name FROM building';
+
 #add reservation.  takes room info, other variables...
 #assumes time/location are available
 $query_add_res=''; #TODO
@@ -82,6 +88,20 @@ function get_user_perm() {
     else {
         return $GLOBALS['no_user_perm'];
     }
+}
+
+function getBuildings()
+{
+	$query=$GLOBALS['query_get_buildings'];
+	$result=mysql_safe($query,array());
+	return $result;
+}
+
+function getCampusRegions()
+{
+	$query=$GLOBALS['query_get_campuses'];
+	$result=mysql_safe($query,array());
+	return $result;
 }
 
 function currentUserRes($uid) 

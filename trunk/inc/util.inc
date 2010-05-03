@@ -1,4 +1,10 @@
 <?
+
+$beg_time=7;
+$end_time=23;
+
+
+
 #session stuff
 session_start();
 function is_logged_in() {
