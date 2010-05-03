@@ -6,7 +6,7 @@
 <div>
 	<? print_r($_SESSION) ?><br/>
     Enter search criteria (* required):
-    <form action="room_res.php" method="get" id="login_form">
+    <form action="room_results.php" method="get" id="login_form">
         <table>
             <tr>
                 <td>
