@@ -17,8 +17,6 @@ function template_start_html() {
 }
 
 function template_head($title) {
-
-
 ?>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -26,8 +24,15 @@ function template_head($title) {
         <title><? echo $title; ?></title>
     </head>
 <?
+}
 
-
+function template_links($role) {
+    $links = get_links($role);
+    while ($link = mysql_fetch_array($links)) {
+?>
+        <div><a href="<?echo $link['page']; ?>"><?echo $link['display']; ?></a></div>
+<?
+    }
 }
 
 function template_start_body($title, $role) {
@@ -91,12 +96,7 @@ if (isset($_SESSION['error'])){
                 <tr>
                     <td id="nav" class="trim">
 <?
-    $links = get_links($role);
-    while ($link = mysql_fetch_array($links)) {
-?>
-                        <div><a href="<?echo $link['page']; ?>"><?echo $link['display']; ?></a></div>
-<?
-    }
+    template_links($role);
 ?>
                     </td>
                     <td id="content">
