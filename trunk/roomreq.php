@@ -11,7 +11,7 @@
             <tr>
                 <td>
                     <span>*Capacity</span>
-                    <input type="text" name="uid" value="" size="12"/>
+                    <input type="text" name="capacity" value="" size="12"/>
                 </td>
             </tr>
 			<tr>
@@ -75,7 +75,7 @@
 						$result=getCampusRegions();
 						while($row = mysql_fetch_array($result))
 						{
-							echo "<option>";
+							echo "<option value='".$row['id']."'>";
 							echo $row['name'];
 							echo "</option>";
 						}
@@ -91,7 +91,7 @@
 						$result=getBuildings();
 						while($row = mysql_fetch_array($result))
 						{
-							echo "<option>";
+							echo "<option value='".$row['id']."'>";
 							echo $row['name'];
 							echo "</option>";
 						}
