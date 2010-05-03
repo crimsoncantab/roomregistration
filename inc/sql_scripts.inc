@@ -43,6 +43,10 @@ $query_curr_res=''; #TODO
 #gets information for a particular room
 $query_get_rooms='SELECT * FROM room WHERE capacity>=? AND capacity<=?'; #TODO
 
+#gets information for a particular room
+$query_get_campus_rooms='SELECT room_num,building,projector,capacity 
+FROM room,building WHERE id=building AND capacity>=? AND capacity<=? AND region=?';
+
 #gets intformation for a particular date
 $query_get_date=''; #TODO
 
@@ -99,6 +103,21 @@ function getBuildingRooms($building,$capacity,$projector)
 		$query .= " AND projector=true";
 	}
 	$result=mysql_safe($query,array($lbound,$ubound,$building));
+	return $result;
+}
+
+function getCampusRooms($campus,$capacity,$projector)
+{
+	$query=$GLOBALS['query_get_campus_rooms'];
+	$lbound=$capacity-3;
+	$ubound=$capacity+10;
+	if(!strcmp($projector,"true"))
+	{
+		//echo "tasdfasdf";
+		//echo $capacity;
+		$query .= " AND projector=true";
+	}
+	$result=mysql_safe($query,array($lbound,$ubound,$campus));
 	return $result;
 }
 

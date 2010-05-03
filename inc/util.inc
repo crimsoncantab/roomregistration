@@ -26,7 +26,7 @@ function mysql_safe($query, $params=false) {
         # str_replace - replacing ? -> %s. %s is ugly in raw sql query
         # vsprintf - replacing all %s to parameters
         $sql_query = vsprintf( str_replace("?","'%s'",$query), $params );
-		//echo $sql_query;
+		echo $sql_query;
         $sql_query = mysql_query($sql_query, $GLOBALS['conn']);    # Perfoming escaped query
     } else {
         $sql_query = mysql_query($query, $GLOBALS['conn']);    # If no params...
