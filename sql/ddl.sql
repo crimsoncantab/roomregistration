@@ -2,8 +2,8 @@ DROP TABLE IF EXISTS pageperm;
 DROP TABLE IF EXISTS events;
 DROP TABLE IF EXISTS room;
 DROP TABLE IF EXISTS building;
-DROP TABLE IF EXISTS campus;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS campus;
 DROP TABLE IF EXISTS priv;
 
 CREATE TABLE priv(
@@ -15,6 +15,12 @@ write_events BOOL NOT NULL
 ) ENGINE=InnoDB;
 
 
+CREATE TABLE campus(
+id CHAR(1) NOT NULL PRIMARY KEY,
+name VARCHAR(30) NOT NULL
+) ENGINE=InnoDB;
+
+
 CREATE TABLE users(
 huid CHAR(8) NOT NULL PRIMARY KEY,
 pwd VARCHAR(40) NOT NULL,
@@ -23,13 +29,9 @@ affiliation ENUM('college', 'grad', 'other'),
 email VARCHAR(30) NOT NULL,
 phone VARCHAR(11) NOT NULL,
 role CHAR(1) NOT NULL,
-FOREIGN KEY (role) REFERENCES priv(role)
-) ENGINE=InnoDB;
-
-
-CREATE TABLE campus(
-id CHAR(1) NOT NULL PRIMARY KEY,
-name VARCHAR(30) NOT NULL
+campus CHAR(1),
+FOREIGN KEY (role) REFERENCES priv(role),
+FOREIGN KEY (campus) REFERENCES campus(id)
 ) ENGINE=InnoDB;
 
 
