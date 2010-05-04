@@ -42,7 +42,20 @@
 			echo "<td>". $row[$i] ."</td>";
 		}
 ?>
-			<td>blah</td>
+			<td>
+<?
+//			print_r($row);
+			$result2=getRoomRes($row['room_num'], $row['building']);
+			//print_r($result2);
+			while($row2 = mysql_fetch_array($result2))
+			{
+				for($i = 0; $i < mysql_num_fields($result2); $i++)
+				{
+					echo $row2[$i]."<br />";
+				}				
+			}
+?>
+			</td>
 			<td>
 				<select name="building">
 					<option selected></option>
@@ -54,8 +67,7 @@
 						echo $i;
 						echo "--";
 						echo $i+$hrs;
-						echo "</option>";
-						
+						echo "</option>";						
 					}
 ?>					
 			</td>
