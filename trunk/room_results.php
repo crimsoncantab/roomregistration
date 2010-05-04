@@ -70,9 +70,10 @@
 						echo "</option>";						
 					}
 ?>					
-			</td>
+                                </select>
+                        </td>
+		</tr>
 <?
-		echo "</tr>";
 	}
 ?>
 		</table>

@@ -12,6 +12,8 @@ INSERT INTO pageperm VALUES
 ('index.php', 'Home', '0', true),
 ('roomreq.php', 'Request Room', 'ftsbar', true),
 ('room_results.php', 'Room Results', 'ftsbar', false),
+('master_view.php', 'View Reservations', 'ftbar', true),
+('change_res.php', 'Change Reservation', 'br', false),
 ('logout.php', 'Logout', 'ftsbar', true)
 ;
 
