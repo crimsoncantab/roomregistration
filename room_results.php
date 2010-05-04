@@ -35,7 +35,7 @@
 	while($row = mysql_fetch_array($result))
 	{
 ?>
-	    <form action="room_submit.php" method="post" id="room_submit">
+	    <form action="handle_req.php" method="post" id="handle_req">
                 <tr>
 <?
 		for($i = 0; $i < mysql_num_fields($result); $i++)
@@ -58,7 +58,7 @@
 ?>
 			</td>
 			<td>
-				<select name="building">
+				<select name="time">
 					<option selected></option>
 <?
 					$hrs=$_GET['duration']/60;
@@ -66,7 +66,7 @@
 					{
 						echo "<option>";
 						echo $i;
-						echo "--";
+						echo " - ";
 						echo $i+$hrs;
 						echo "</option>";						
 					}
