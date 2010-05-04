@@ -47,7 +47,7 @@
 			<td>
 <?
 //			print_r($row);
-			$result2=getRoomRes($row['room_num'], $row['building']);
+			$result2=getRoomRes($row['room_num'], $row['building'], $_GET['month'], $_GET['day']);
 			//print_r($result2);
 			while($row2 = mysql_fetch_array($result2))
 			{

@@ -41,7 +41,8 @@ $query_add_res=''; #TODO
 #takes room and time interval
 #hmm, we might need a little transaction to help us out here.  we have to check
 #for availability, then add a reservation if possible, all in one swoop.
-$query_get_room_res='SELECT start_time,end_time FROM events WHERE room=? AND building=?';
+$query_get_room_res='SELECT start_time,end_time FROM events WHERE room=? AND building=? 
+AND MONTH(start_time)=? AND DAY(start_time)=?';
 
 #gets information for a particular room
 $query_get_rooms='SELECT * FROM room WHERE capacity>=? AND capacity<=?'; #TODO
@@ -54,10 +55,10 @@ FROM room,building WHERE id=building AND capacity>=? AND capacity<=? AND region=
 $query_get_date=''; #TODO
 
 
-function getRoomRes($room,$building)
+function getRoomRes($room,$building,$month,$day)
 {
 	$query=$GLOBALS['query_get_room_res'];
-	$result=mysql_safe($query, array($room,$building));
+	$result=mysql_safe($query, array($room,$building,$month,$day));
 	return $result;
 }
 
