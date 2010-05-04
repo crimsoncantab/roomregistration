@@ -101,7 +101,7 @@
 			</tr>
             <tr>
                 <td>
-                    <input type="submit" value="Submit" name="sub"/>
+                    <input type="submit" value="Submit" name="submit"/>
                 </td>
             </tr>
         </table>
