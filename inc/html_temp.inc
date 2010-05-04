@@ -121,7 +121,7 @@ function template_end() {
 
 function template_start($filename, $title, $banner, $redir) {
 	$role = get_user_perm();
-        auth_page(basename($filename), $role, $redir);
+        auth_page($filename, $role, $redir);
 	template_start_html();
 	template_head($title);
 	template_start_body($banner, $role);
