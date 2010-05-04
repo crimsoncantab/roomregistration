@@ -48,13 +48,14 @@
 					<option selected></option>
 <?
 					$hrs=$_GET['duration']/60;
-					for($i=$GLOBALS['beg'];$i<$GLOBALS['end'];$i+=$hrs)
+					for($i=$GLOBALS['beg'];$i+$hrs<$GLOBALS['end'];$i+=0.5)
 					{
 						echo "<option>";
 						echo $i;
 						echo "--";
 						echo $i+$hrs;
 						echo "</option>";
+						
 					}
 ?>					
 			</td>
