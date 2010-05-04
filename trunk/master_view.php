@@ -4,9 +4,11 @@
         template_start(basename(__FILE__), 'HRR', 'Harvard Room Reservation - Master View', '.');
 ?>
 <div>
-<?
-?>
 Master View
+<?
+	$results=currentRes();
+	dump_results_into_html($results, false);
+?>
 
 </div>
 <?

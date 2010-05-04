@@ -4,28 +4,10 @@
         template_start(basename(__FILE__), 'HRR', 'Harvard Room Reservation - Dashboard', '.');
 ?>
 <div>
-    Your current reservations:
+    Your current reservations.  Click on a reservation to edit it.
 <?
- 	# this code inspired by http://www.tizag.com/mysqlTutorial/mysql-date.php
-	$result=currentUserRes($_SESSION['uid']); 
-	echo "<table border='1'><tr>";
-	for($i = 0; $i < mysql_num_fields($result); $i++)
-	{
-		echo "<th>".mysql_field_name($result, $i)."</th>";
-	}
-	echo "</tr>";
-	
-	while($row = mysql_fetch_array($result))
-	{
-		echo "<tr>";
-		for($i = 0; $i < mysql_num_fields($result); $i++)
-		{
-			echo "<td>". $row[$i] ."</td>";
-		}
-		echo "</tr>";
-	}
-
-	echo "</table>";
+	$result=currentUserRes();
+	dump_results_into_html($result, true);
 ?>
 
 </div>

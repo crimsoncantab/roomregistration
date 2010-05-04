@@ -7,12 +7,32 @@ $end=23;
 
 #session stuff
 session_start();
+function logout() {
+    session_unset();
+    session_destroy();
+}
 function is_logged_in() {
     return isset ($_SESSION['uid']);
 }
-function set_logged_in($uid,$username) {
+function set_logged_in($uid,$username,$role,$can_edit) {
 	$_SESSION['uid'] = $uid;
 	$_SESSION['username'] = $username;
+	$_SESSION['perm'] = $role;
+        $_SESSION['can_edit'] = $can_edit;
+}
+
+function get_user_perm() {
+    if (is_logged_in()) {
+        //print_r($_SESSION);
+        return $_SESSION['perm'];
+    }
+    else {
+        return $GLOBALS['no_user_perm'];
+    }
+}
+
+function can_edit_res() {
+    return $_SESSION['can_edit'];
 }
 
 
@@ -31,7 +51,7 @@ function mysql_safe($query, $params=false) {
     } else {
         $sql_query = mysql_query($query, $GLOBALS['conn']);    # If no params...
     }
-
+    //echo $sql_query;
     return $sql_query;
 }
 
@@ -43,14 +63,4 @@ function redirect($page, $die=true) {
     header("Location: http://$host$uri/$page");
     if ($die) die();
 }
-//function redir_if_logged_in($redir) {
-//    if (is_logged_in()) {
-//        redirect($redir);
-//    }
-//}
-//function redir_if_not_logged_in($redir) {
-//    if (!is_logged_in()) {
-//        redirect($redir);
-//    }
-//}
 ?>

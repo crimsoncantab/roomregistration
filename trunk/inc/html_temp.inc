@@ -4,6 +4,32 @@ require_once 'util.inc';
 require_once 'inc/db_init.inc';
 require_once 'inc/sql_scripts.inc';
 
+# this code inspired by http://www.tizag.com/mysqlTutorial/mysql-date.php
+function dump_results_into_html($results, $can_modify) {
+    echo '<table border="1"><tr>';
+    for($i = 0; $i < mysql_num_fields($results); $i++)
+    {
+            echo '<th>'.mysql_field_name($results, $i).'</th>';
+    }
+    echo '</tr>';
+
+    while($row = mysql_fetch_array($results))
+    {
+        if ($can_modify) {
+            echo '<tr class="clickable" onclick="javascript:window.location=\'change_res.php?event_id='.$row['event_id'].'\'">';
+        } else {
+            echo '<tr>';
+        }
+            for($i = 0; $i < mysql_num_fields($results); $i++)
+            {
+                    echo '<td>'. $row[$i] .'</td>';
+            }
+            echo '</tr>';
+    }
+
+    echo '</table>';
+}
+
 function template_start_html() {
 
 
@@ -26,16 +52,17 @@ function template_head($title) {
 <?
 }
 
-function template_links($role) {
-    $links = get_links($role);
+function template_links() {
+    $links = get_links();
     while ($link = mysql_fetch_array($links)) {
+        //&loz;  &diams; &raquo; &rsaquo; &rang; &#9002;
 ?>
-        <div><a href="<?echo $link['page']; ?>"><?echo $link['display']; ?></a></div>
+        <div>&loz;<a href="<?echo $link['page']; ?>"><?echo $link['display']; ?></a></div>
 <?
     }
 }
 
-function template_start_body($title, $role) {
+function template_start_body($title) {
 
 
 ?>
@@ -96,7 +123,7 @@ if (isset($_SESSION['error'])){
                 <tr>
                     <td id="nav" class="trim">
 <?
-    template_links($role);
+    template_links();
 ?>
                     </td>
                     <td id="content">
@@ -120,10 +147,9 @@ function template_end() {
 }
 
 function template_start($filename, $title, $banner, $redir) {
-	$role = get_user_perm();
-        auth_page($filename, $role, $redir);
+        auth_page($filename, $redir);
 	template_start_html();
 	template_head($title);
-	template_start_body($banner, $role);
+	template_start_body($banner);
 }
 ?>
