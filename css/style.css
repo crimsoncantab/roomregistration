@@ -75,3 +75,9 @@ body{
     padding: 10px;
 
 }
+.clickable {
+    cursor: pointer;
+}
+.clickable:hover {
+    background-color: #CCCCCC;
+}

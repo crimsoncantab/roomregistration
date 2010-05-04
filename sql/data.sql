@@ -6,15 +6,15 @@ INSERT INTO priv VALUES
 ('a','admin_asst',9,true,false),
 ('r','sysadmin',15,true,true);
 
-INSERT INTO pageperm VALUES
-('about.php', 'About Us', '0ftsbar', true),
+INSERT INTO pageperm(page, display, perm, in_nav) VALUES
 ('home.php', 'Dashboard', 'ftsbar', true),
 ('index.php', 'Home', '0', true),
-('roomreq.php', 'Request Room', 'ftsbar', true),
+('roomreq.php', 'Make Request', 'ftsbar', true),
+('master_view.php', 'View All', 'ftbar', true),
+('about.php', 'About Us', '0ftsbar', true),
+('logout.php', 'Logout', 'ftsbar', true),
 ('room_results.php', 'Room Results', 'ftsbar', false),
-('master_view.php', 'View Reservations', 'ftbar', true),
-('change_res.php', 'Change Reservation', 'br', false),
-('logout.php', 'Logout', 'ftsbar', true)
+('change_res.php', 'Change Reservation', 'br', false)
 ;
 
 INSERT INTO campus VALUES

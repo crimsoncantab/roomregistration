@@ -13,10 +13,13 @@ require_once 'vars.inc';
 #mysql_safe($query, array($var1, $var2));
 
 #authenticates user.  takes username, phash params, returns user info
-$query_auth_user='SELECT * FROM users WHERE huid=?';
+$query_auth_user='SELECT * FROM users, priv WHERE huid=?';
 
 #get user's current events.
 $query_curr_user_res='SELECT * FROM events WHERE huid=?';
+
+#get all res
+$query_res='SELECT * FROM events';
 
 #check webpage permissions against a user.
 $query_auth_page='SELECT * FROM pageperm WHERE page=? AND LOCATE(?, perm) != 0';
@@ -38,7 +41,6 @@ $query_add_res=''; #TODO
 #takes room and time interval
 #hmm, we might need a little transaction to help us out here.  we have to check
 #for availability, then add a reservation if possible, all in one swoop.
-$query_curr_res=''; #TODO
 $query_get_room_res='SELECT start_time,end_time FROM events WHERE room=? AND building=?';
 
 #gets information for a particular room
@@ -75,7 +77,7 @@ function authUser($uid,$pwd) {
 	}
 	else
 	{
-		set_logged_in($uid,$data['name']);
+		set_logged_in($uid,$data['name'], $data['role'], $data['write_events']);
 		return true;
 	}
 	
@@ -134,26 +136,6 @@ function getCampusRooms($campus,$capacity,$projector)
 	return $result;
 }
 
-function get_user_perm() {
-    if (is_logged_in()) {
-        $query=$GLOBALS['query_auth_user'];
-        $result=mysql_safe($query, array($_SESSION['uid']));
-        if(mysql_num_rows($result)==0) #shouldn't happen
-	{
-		$_SESSION['error']="Current session not found in database.";
-		return $GLOBALS['no_user_perm'];
-	}
-	else
-	{
-		$data = mysql_fetch_array($result);
-                return $data['role'];
-	}
-    }
-    else {
-        return $GLOBALS['no_user_perm'];
-    }
-}
-
 function getBuildings()
 {
 	$query=$GLOBALS['query_get_buildings'];
@@ -168,25 +150,31 @@ function getCampusRegions()
 	return $result;
 }
 
-function currentUserRes($uid) 
+function currentRes() {
+    	$query=$GLOBALS['query_res'];
+	$result=mysql_safe($query,array());
+	return $result;
+}
+
+function currentUserRes() 
 {
 	$query=$GLOBALS['query_curr_user_res'];
-	$result=mysql_safe($query, array($uid));
+	$result=mysql_safe($query, array($_SESSION['uid']));
 	return $result;	
 }
 
-function auth_page($filename, $role, $redir) {
+function auth_page($filename, $redir) {
     $query=$GLOBALS['query_auth_page'];
-    $result=mysql_safe($query, array($filename, $role));
+    $result=mysql_safe($query, array($filename, get_user_perm()));
     if(mysql_num_rows($result) == 0)
     {
         redirect($redir);
     }
 }
 
-function get_links($role) {
+function get_links() {
     $query=$GLOBALS['query_get_links'];
-    $result=mysql_safe($query, array($role));
+    $result=mysql_safe($query, array(get_user_perm()));
     return $result;
 }
 ?>
