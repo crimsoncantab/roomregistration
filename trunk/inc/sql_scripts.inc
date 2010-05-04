@@ -79,6 +79,8 @@ function getRooms($capacity,$projector)
 	$query=$GLOBALS['query_get_rooms'];
 	$lbound=$capacity-3;
 	$ubound=$capacity+10;
+	if($capacity>=50)
+		$ubound+=200;
 	if(!strcmp($projector,"true"))
 	{
 		//echo "tasdfasdf";
@@ -95,6 +97,8 @@ function getBuildingRooms($building,$capacity,$projector)
 	$query=$GLOBALS['query_get_rooms'];
 	$lbound=$capacity-3;
 	$ubound=$capacity+10;
+	if($capacity>=50)
+		$ubound+=200;
 	$query .= " AND building=?";
 	if(!strcmp($projector,"true"))
 	{
@@ -111,6 +115,8 @@ function getCampusRooms($campus,$capacity,$projector)
 	$query=$GLOBALS['query_get_campus_rooms'];
 	$lbound=$capacity-3;
 	$ubound=$capacity+10;
+	if($capacity>=50)
+		$ubound+=200;
 	if(!strcmp($projector,"true"))
 	{
 		//echo "tasdfasdf";
