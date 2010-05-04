@@ -20,12 +20,18 @@
 		else if($_GET['campus']!="")
 			$result=getCampusRooms($_GET['campus'],$_GET['capacity'],$_GET['projector']);
 	}
-
-	echo "<table border='1'><tr>";
+?>
+    <form action="room_submit.php" method="post" id="room_submit">
+		<table border='1'><tr>
+<?
 	for($i = 0; $i < mysql_num_fields($result); $i++)
 	{
 		echo "<th>".mysql_field_name($result, $i)."</th>";
 	}
+?>
+			<th>unavailable times</th>
+			<th>select time</th>
+<?
 	echo "</tr>";
 	
 	while($row = mysql_fetch_array($result))
@@ -35,11 +41,29 @@
 		{
 			echo "<td>". $row[$i] ."</td>";
 		}
+?>
+			<td>blah</td>
+			<td>
+				<select name="building">
+					<option selected></option>
+<?
+					$hrs=$_GET['duration']/60;
+					for($i=$GLOBALS['beg'];$i<$GLOBALS['end'];$i+=$hrs)
+					{
+						echo "<option>";
+						echo $i;
+						echo "--";
+						echo $i+$hrs;
+						echo "</option>";
+					}
+?>					
+			</td>
+<?
 		echo "</tr>";
 	}
-
-	echo "</table>";
 ?>
+		</table>
+	</form>
 </div>
 
 <?

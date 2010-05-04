@@ -6,7 +6,7 @@
 <div>
 	<? print_r($_SESSION) ?><br/>
     Enter search criteria (* required):
-    <form action="room_results.php" method="get" id="login_form">
+    <form action="room_results.php" method="get" id="room_form">
         <table>
             <tr>
                 <td>
@@ -15,11 +15,11 @@
                 </td>
             </tr>
 			<tr>
-				<td>*Time:
-					<select name="time">
+				<td>*Duration:
+					<select name="duration">
 						<option selected></option>
 <?
-						for($i=$GLOBALS['beg_time']; $i<=$GLOBALS['end_time']; $i++)
+						for($i=30; $i<=120; $i+=30)
 						{
 							echo "<option>";
 							echo $i;
