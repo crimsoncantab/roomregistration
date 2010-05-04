@@ -21,7 +21,6 @@
 			$result=getCampusRooms($_GET['campus'],$_GET['capacity'],$_GET['projector']);
 	}
 ?>
-    <form action="room_submit.php" method="post" id="room_submit">
 		<table border='1'><tr>
 <?
 	for($i = 0; $i < mysql_num_fields($result); $i++)
@@ -36,6 +35,9 @@
 	
 	while($row = mysql_fetch_array($result))
 	{
+?>
+	    <form action="room_submit.php" method="post" id="room_submit">
+<?
 		echo "<tr>";
 		for($i = 0; $i < mysql_num_fields($result); $i++)
 		{
@@ -71,13 +73,16 @@
 					}
 ?>					
                                 </select>
-                        </td>
+            </td>
+			<td>
+				<input type="submit" value="Submit" name="submit"/>
+			</td>
 		</tr>
+	</form>
 <?
 	}
 ?>
 		</table>
-	</form>
 </div>
 
 <?
