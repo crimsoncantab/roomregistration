@@ -7,12 +7,12 @@ INSERT INTO priv VALUES
 ('r','sysadmin',15,true,true);
 
 INSERT INTO pageperm VALUES
-('about.php', 'About Us', '0ftsbar'),
-('home.php', 'Dashboard', 'ftsbar'),
-('index.php', 'Home', '0'),
-('roomreq.php', 'Request Room', 'ftsbar'),
-('room_results.php', 'Room Results', 'ftsbar'),
-('logout.php', 'Logout', 'ftsbar')
+('about.php', 'About Us', '0ftsbar', true),
+('home.php', 'Dashboard', 'ftsbar', true),
+('index.php', 'Home', '0', true),
+('roomreq.php', 'Request Room', 'ftsbar', true),
+('room_results.php', 'Room Results', 'ftsbar', false),
+('logout.php', 'Logout', 'ftsbar', true)
 ;
 
 INSERT INTO campus VALUES
