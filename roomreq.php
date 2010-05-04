@@ -1,7 +1,6 @@
 <?
 	require_once 'inc/html_temp.inc';
-	$role = get_user_perm();
-        template_start(basename(__FILE__), 'HRR', 'Harvard Room Reservation - Request Room', '.');
+        template_start(basename(__FILE__), 'HRR', 'Request a Room', '.');
 ?>
 <div>
 	<? print_r($_SESSION) ?><br/>

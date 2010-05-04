@@ -1,34 +1,9 @@
 <?
 require_once 'vars.inc';
 require_once 'util.inc';
-require_once 'inc/db_init.inc';
-require_once 'inc/sql_scripts.inc';
-
-# this code inspired by http://www.tizag.com/mysqlTutorial/mysql-date.php
-function dump_results_into_html($results, $can_modify) {
-    echo '<table border="1"><tr>';
-    for($i = 0; $i < mysql_num_fields($results); $i++)
-    {
-            echo '<th>'.mysql_field_name($results, $i).'</th>';
-    }
-    echo '</tr>';
-
-    while($row = mysql_fetch_array($results))
-    {
-        if ($can_modify) {
-            echo '<tr class="clickable" onclick="javascript:window.location=\'change_res.php?event_id='.$row['event_id'].'\'">';
-        } else {
-            echo '<tr>';
-        }
-            for($i = 0; $i < mysql_num_fields($results); $i++)
-            {
-                    echo '<td>'. $row[$i] .'</td>';
-            }
-            echo '</tr>';
-    }
-
-    echo '</table>';
-}
+require_once 'db_init.inc';
+require_once 'sql_scripts.inc';
+require_once 'inc/event.inc';
 
 function template_start_html() {
 
@@ -62,7 +37,7 @@ function template_links() {
     }
 }
 
-function template_start_body($title) {
+function template_start_body($subtitle) {
 
 
 ?>
@@ -117,7 +92,10 @@ if (isset($_SESSION['error'])){
     }
 ?>
                         </div>
-                        <div id="title"><? echo $title; ?></div>
+                        <div id="title">
+                            <div>Harvard Room Reservation</div>
+                            <div><? echo $subtitle; ?></div>
+                        </div>
                     </th>
                 </tr>
                 <tr>
