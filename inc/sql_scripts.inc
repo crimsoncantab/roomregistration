@@ -22,7 +22,7 @@ $query_curr_user_res='SELECT * FROM events WHERE huid=?';
 $query_auth_page='SELECT * FROM pageperm WHERE page=? AND LOCATE(?, perm) != 0';
 
 #get available links
-$query_get_links='SELECT page, display FROM pageperm WHERE LOCATE(?, perm) != 0';
+$query_get_links='SELECT page, display FROM pageperm WHERE LOCATE(?, perm) != 0 AND in_nav=true';
 
 #get campuses
 $query_get_campuses='SELECT id,name FROM campus';
