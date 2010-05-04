@@ -14,7 +14,7 @@ INSERT INTO pageperm(page, display, perm, in_nav) VALUES
 ('about.php', 'About Us', '0ftsbar', true),
 ('logout.php', 'Logout', 'ftsbar', true),
 ('room_results.php', 'Room Results', 'ftsbar', false),
-('change_res.php', 'Change Reservation', 'br', false)
+('change_res.php', 'Change Reservation', 'ftsbar', false)
 ;
 
 INSERT INTO campus VALUES

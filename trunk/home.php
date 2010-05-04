@@ -1,13 +1,19 @@
 <?
 	require_once 'inc/html_temp.inc';
-	$role = get_user_perm();
-        template_start(basename(__FILE__), 'HRR', 'Harvard Room Reservation - Dashboard', '.');
+        template_start(basename(__FILE__), 'HRR', 'Dashboard', '.');
 ?>
 <div>
     Your current reservations.  Click on a reservation to edit it.
 <?
-	$result=currentUserRes();
-	dump_results_into_html($result, true);
+	$events=currentUserRes();
+        echo '<table border="1">';
+        Event::getEventHeaderRow();
+
+        foreach ($events as $event) {
+            $event->getHtmlRow();
+        }
+
+        echo '</table>';
 ?>
 
 </div>

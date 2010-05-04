@@ -1,13 +1,21 @@
 <?
 	require_once 'inc/html_temp.inc';
-	$role = get_user_perm();
-        template_start(basename(__FILE__), 'HRR', 'Harvard Room Reservation - Master View', '.');
+        require_once 'inc/sql_scripts.inc';
+        template_start(basename(__FILE__), 'HRR', 'Master View', '.');
 ?>
 <div>
 Master View
 <?
-	$results=currentRes();
-	dump_results_into_html($results, false);
+        print_r($_SESSION);
+	$events=currentRes();
+        echo '<table border="1">';
+        Event::getEventHeaderRow();
+
+        foreach ($events as $event) {
+            $event->getHtmlRow();
+        }
+
+        echo '</table>';
 ?>
 
 </div>

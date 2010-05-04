@@ -1,6 +1,7 @@
 <?
 require_once 'util.inc';
 require_once 'vars.inc';
+require_once 'event.inc';
 #This file lists all the queries needed.
 #When a query takes parameters, they should be escaped with ?
 #The query should be called with the mysql_safe() function in util.inc,
@@ -13,7 +14,7 @@ require_once 'vars.inc';
 #mysql_safe($query, array($var1, $var2));
 
 #authenticates user.  takes username, phash params, returns user info
-$query_auth_user='SELECT * FROM users, priv WHERE huid=?';
+$query_auth_user='SELECT * FROM users NATURAL JOIN priv WHERE huid=?';
 
 #get user's current events.
 $query_curr_user_res='SELECT * FROM events WHERE huid=?';
@@ -154,14 +155,21 @@ function getCampusRegions()
 function currentRes() {
     	$query=$GLOBALS['query_res'];
 	$result=mysql_safe($query,array());
-	return $result;
+        while($row = mysql_fetch_array($result)) {
+            $events[] = new Event($row);
+        }
+	return $events;
 }
 
 function currentUserRes() 
 {
 	$query=$GLOBALS['query_curr_user_res'];
 	$result=mysql_safe($query, array($_SESSION['uid']));
-	return $result;	
+        $events=array();
+        while($row = mysql_fetch_array($result)) {
+            $events[] = new Event($row);
+        }
+	return $events;
 }
 
 function auth_page($filename, $redir) {

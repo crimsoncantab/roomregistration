@@ -1,7 +1,6 @@
 <?
 	require_once 'inc/html_temp.inc';
-	$role = get_user_perm();
-        template_start(basename(__FILE__), 'HRR', 'Harvard Room Reservation - Room Results', '.');
+        template_start(basename(__FILE__), 'HRR', 'Harvard Room Reservation &sect; Available Rooms', '.');
 ?>
 <div>
 	<? print_r($_SESSION) ?>
@@ -37,8 +36,8 @@
 	{
 ?>
 	    <form action="room_submit.php" method="post" id="room_submit">
+                <tr>
 <?
-		echo "<tr>";
 		for($i = 0; $i < mysql_num_fields($result); $i++)
 		{
 			echo "<td>". $row[$i] ."</td>";

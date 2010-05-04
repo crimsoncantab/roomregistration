@@ -31,8 +31,8 @@ function get_user_perm() {
     }
 }
 
-function can_edit_res() {
-    return $_SESSION['can_edit'];
+function can_edit_res($res_user) {
+    return $_SESSION['can_edit'] == 1 || $res_user == $_SESSION['uid'];
 }
 
 
