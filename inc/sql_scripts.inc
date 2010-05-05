@@ -35,13 +35,19 @@ $query_get_campuses='SELECT id,name FROM campus';
 $query_get_buildings='SELECT id,name FROM building';
 
 #add reservation.  takes room info, other variables...
-#assumes time/location are available
-$query_add_res=''; #TODO
+#assumes time/location are available, returns event_id
+$query_add_res='INSERT INTO events(huid,room,building,date_req,description,start_time,end_time,recurring) VALUES'.
+'(?,?,?,NOW(),?,FROM_UNIXTIME(?),FROM_UNIXTIME(?),NULL); SELECT LAST_INSERT_ID()';
+
+#delete reservation.
+$query_remove_res='DELETE FROM events WHERE event_id = ?';
 
 #find reservation(s) during certain time interval and for certain room
 #takes room and time interval
-#hmm, we might need a little transaction to help us out here.  we have to check
-#for availability, then add a reservation if possible, all in one swoop.
+$query_events_date_range_room='SELECT * FROM events WHERE ((FROM_UNIXTIME(?) BETWEEN start_time AND end_time)'.
+    ' OR (FROM_UNIXTIME(?) BETWEEN start_time AND end_time)) AND room=? AND building=?';
+
+
 $query_get_room_res='SELECT start_time,end_time FROM events WHERE room=? AND building=? 
 AND MONTH(start_time)=? AND DAY(start_time)=?';
 
@@ -172,6 +178,23 @@ function currentUserRes()
 	return $events;
 }
 
+function add_res($room, $building, $desc, $start_time, $end_time) {
+        $query=$GLOBALS['query_add_res'];
+	$event_id=mysql_safe($query, array($_SESSION['uid'], $room, $building, $desc, $start_time, $end_time));
+	return $event_id;
+}
+
+#for finding conflicts
+function resDateRangeRoom($start_time, $end_time, $room, $bldg) {
+    $query=$GLOBALS['query_events_date_range_room'];
+    $result=mysql_safe($query, array($start_time, $end_time, $room, $bldg));
+    $events=array();
+    while($row = mysql_fetch_array($result)) {
+        $events[] = new Event($row);
+    }
+    return $events;
+}
+
 function auth_page($filename, $redir) {
     $query=$GLOBALS['query_auth_page'];
     $result=mysql_safe($query, array($filename, get_user_perm()));
@@ -185,5 +208,17 @@ function get_links() {
     $query=$GLOBALS['query_get_links'];
     $result=mysql_safe($query, array(get_user_perm()));
     return $result;
+}
+
+function begin_transaction() {
+    mysql_query('BEGIN');
+}
+
+function commit_transaction() {
+    mysql_query('COMMIT');
+}
+
+function rollback_transaction() {
+    mysql_query('ROLLBACK');
 }
 ?>
