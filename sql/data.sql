@@ -10,12 +10,12 @@ INSERT INTO pageperm(page, display, perm, in_nav) VALUES
 ('home.php', 'Dashboard', 'ftsbar', true),
 ('index.php', 'Home', '0', true),
 ('roomreq.php', 'Make Request', 'ftsbar', true),
+('change_res.php', 'Quick Request', 'ftsbar', true),
 ('master_view.php', 'View All', 'ftbar', true),
 ('about.php', 'About Us', '0ftsbar', true),
 ('logout.php', 'Logout', 'ftsbar', true),
 ('handle_req.php', 'Add Request', 'ftsbar', false),
-('room_results.php', 'Room Results', 'ftsbar', false),
-('change_res.php', 'Change Reservation', 'ftsbar', false)
+('room_results.php', 'Room Results', 'ftsbar', false)
 ;
 
 INSERT INTO campus VALUES
@@ -173,9 +173,9 @@ INSERT INTO room VALUES
 ('17','EM',false,20)
 ;
 
-INSERT INTO events(huid,room,building,date_req,description,start_time,end_time,recurring) VALUES
-('11111111','3','MD',NOW(),'harvard engineering society','2010-5-1 14:00:00','2010-5-1 14:30:00',NULL),
-('11111111','3','MD',NOW(),'harvard engineering society','2010-5-4 13:00:00','2010-5-4 14:00:00',NULL),
-('11111111','3','MD',NOW(),'harvard engineering society','2010-5-4 15:00:00','2010-5-4 15:30:00',NULL)
+INSERT INTO events(huid,room,building,date_req,description,start_time,end_time,priority,recurring) VALUES
+('11111111','3','MD',NOW(),'harvard engineering society','2010-5-1 14:00:00','2010-5-1 14:30:00',10,NULL),
+('11111111','3','MD',NOW(),'harvard engineering society','2010-5-4 13:00:00','2010-5-4 14:00:00',10,NULL),
+('11111111','3','MD',NOW(),'harvard engineering society','2010-5-4 15:00:00','2010-5-4 15:30:00',10,NULL)
 ;
 

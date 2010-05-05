@@ -17,10 +17,10 @@ require_once 'event.inc';
 $query_auth_user='SELECT * FROM users NATURAL JOIN priv WHERE huid=?';
 
 #get user's current events.
-$query_curr_user_res='SELECT * FROM events WHERE huid=?';
+$query_curr_user_res='SELECT * FROM events WHERE huid=? ORDER BY start_time';
 
 #get all res
-$query_res='SELECT * FROM events';
+$query_res='SELECT * FROM events ORDER BY start_time';
 
 #check webpage permissions against a user.
 $query_auth_page='SELECT * FROM pageperm WHERE page=? AND LOCATE(?, perm) != 0';
@@ -36,16 +36,23 @@ $query_get_buildings='SELECT id,name FROM building';
 
 #add reservation.  takes room info, other variables...
 #assumes time/location are available, returns event_id
-$query_add_res='INSERT INTO events(huid,room,building,date_req,description,start_time,end_time,recurring) VALUES'.
-'(?,?,?,NOW(),?,FROM_UNIXTIME(?),FROM_UNIXTIME(?),NULL); SELECT LAST_INSERT_ID()';
+$query_add_res='INSERT INTO events(huid,room,building,date_req,description,start_time,end_time,priority, recurring) VALUES'.
+'(?,?,?,NOW(),?,FROM_UNIXTIME(?),FROM_UNIXTIME(?),?,NULL)';
 
 #delete reservation.
 $query_remove_res='DELETE FROM events WHERE event_id = ?';
 
+#update reservation
+$query_update_res='UPDATE events SET room = ?, building = ?, start_time = FROM_UNIXTIME(?), end_time = FROM_UNIXTIME(?) WHERE event_id = ?';
+
 #find reservation(s) during certain time interval and for certain room
 #takes room and time interval
-$query_events_date_range_room='SELECT * FROM events WHERE ((FROM_UNIXTIME(?) BETWEEN start_time AND end_time)'.
-    ' OR (FROM_UNIXTIME(?) BETWEEN start_time AND end_time)) AND room=? AND building=?';
+#we add/subtract seconds because the BETWEEN comparison does <= and >=
+#if the enddate of one and begindate of another are the same, they do not conflict
+$query_events_date_range_room='SELECT * FROM events WHERE'.
+    ' ((FROM_UNIXTIME(?) BETWEEN start_time AND DATE_SUB(end_time, INTERVAL 1 SECOND))'.
+    ' OR (FROM_UNIXTIME(?) BETWEEN DATE_ADD(start_time, INTERVAL 1 SECOND) AND end_time))'.
+    ' AND room=? AND building=? AND event_id != ?';
 
 
 $query_get_room_res='SELECT start_time,end_time FROM events WHERE room=? AND building=? 
@@ -54,13 +61,25 @@ AND MONTH(start_time)=? AND DAY(start_time)=?';
 #gets information for a particular room
 $query_get_rooms='SELECT * FROM room WHERE capacity>=? AND capacity<=?'; #TODO
 
+#gets every room
+$query_get_all_rooms='SELECT * FROM room';
+
 #gets information for a particular room
 $query_get_campus_rooms='SELECT room_num,building,projector,capacity 
 FROM room,building WHERE id=building AND capacity>=? AND capacity<=? AND region=?';
 
+#gets an event
+$query_get_event='SELECT * FROM events WHERE event_id = ?';
+
 #gets intformation for a particular date
 $query_get_date=''; #TODO
 
+
+function getAllRooms() {
+	$query=$GLOBALS['query_get_all_rooms'];
+	$result=mysql_safe($query, array($room,$building,$month,$day));
+	return $result;
+}
 
 function getRoomRes($room,$building,$month,$day)
 {
@@ -158,6 +177,13 @@ function getCampusRegions()
 	return $result;
 }
 
+function getEvent($event_id) {
+    	$query=$GLOBALS['query_get_event'];
+	$result=mysql_safe($query,array($event_id));
+        $row = mysql_fetch_array($result);
+        return new Event($row);
+}
+
 function currentRes() {
     	$query=$GLOBALS['query_res'];
 	$result=mysql_safe($query,array());
@@ -178,16 +204,22 @@ function currentUserRes()
 	return $events;
 }
 
-function add_res($room, $building, $desc, $start_time, $end_time) {
+function add_res($room, $building, $desc, $start_time, $end_time, $priority=0) {
         $query=$GLOBALS['query_add_res'];
-	$event_id=mysql_safe($query, array($_SESSION['uid'], $room, $building, $desc, $start_time, $end_time));
+	$event_id=mysql_safe($query, array($_SESSION['uid'], $room, $building, $desc, $start_time, $end_time, $priority));
 	return $event_id;
 }
 
-#for finding conflicts
-function resDateRangeRoom($start_time, $end_time, $room, $bldg) {
+function update_res($event_id, $room, $building, $start_time, $end_time) {
+        $query=$GLOBALS['query_update_res'];
+	mysql_safe($query, array($room, $building, $start_time, $end_time, $event_id));
+}
+
+#for finding conflicts.  $ignore_id is for when we update an event,
+#it shouldn't conflict with itself
+function resDateRangeRoom($start_time, $end_time, $room, $bldg, $ignore_id=-1) {
     $query=$GLOBALS['query_events_date_range_room'];
-    $result=mysql_safe($query, array($start_time, $end_time, $room, $bldg));
+    $result=mysql_safe($query, array($start_time, $end_time, $room, $bldg, $ignore_id));
     $events=array();
     while($row = mysql_fetch_array($result)) {
         $events[] = new Event($row);
@@ -218,7 +250,12 @@ function commit_transaction() {
     mysql_query('COMMIT');
 }
 
-function rollback_transaction() {
+function abort_transaction() {
     mysql_query('ROLLBACK');
+}
+
+function get_last_id() {
+    $row = mysql_fetch_array(mysql_query("SELECT LAST_INSERT_ID() as id"));
+    return $row['id'];
 }
 ?>
