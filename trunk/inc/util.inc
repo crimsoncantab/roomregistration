@@ -14,6 +14,7 @@ function logout() {
 function is_logged_in() {
     return isset ($_SESSION['uid']);
 }
+
 function set_logged_in($uid,$username,$role,$can_edit) {
 	$_SESSION['uid'] = $uid;
 	$_SESSION['username'] = $username;
@@ -52,6 +53,17 @@ function mysql_safe($query, $params=false) {
     }
     return $sql_query;
 }
+
+
+function email($subj, $uid, $msg)
+{
+	$result=getEmailAddr($uid);
+	$emaila=mysql_fetch_array($result);
+	$email=$emaila['email'];
+	mail($email, $subj, $msg);
+
+}
+
 
 
 #redirects
