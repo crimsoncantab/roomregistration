@@ -8,9 +8,7 @@
 ?>
 <div>
 Use the following form to change the reservation:
-<?
-
-?>
+<form action="handle_req.php" method="post" id="change_form" />
 </div>
 <?
 	template_end();

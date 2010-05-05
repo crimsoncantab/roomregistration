@@ -3,8 +3,6 @@
 $beg=7;
 $end=23;
 
-
-
 #session stuff
 session_start();
 function logout() {
@@ -23,7 +21,6 @@ function set_logged_in($uid,$username,$role,$can_edit) {
 
 function get_user_perm() {
     if (is_logged_in()) {
-        //print_r($_SESSION);
         return $_SESSION['perm'];
     }
     else {
@@ -46,12 +43,10 @@ function mysql_safe($query, $params=false) {
         # str_replace - replacing ? -> %s. %s is ugly in raw sql query
         # vsprintf - replacing all %s to parameters
         $sql_query = vsprintf( str_replace("?","'%s'",$query), $params );
-		//echo $sql_query;
         $sql_query = mysql_query($sql_query, $GLOBALS['conn']);    # Perfoming escaped query
     } else {
         $sql_query = mysql_query($query, $GLOBALS['conn']);    # If no params...
     }
-    //echo $sql_query;
     return $sql_query;
 }
 

@@ -13,6 +13,7 @@ INSERT INTO pageperm(page, display, perm, in_nav) VALUES
 ('master_view.php', 'View All', 'ftbar', true),
 ('about.php', 'About Us', '0ftsbar', true),
 ('logout.php', 'Logout', 'ftsbar', true),
+('handle_req.php', 'Add Request', 'ftsbar', false),
 ('room_results.php', 'Room Results', 'ftsbar', false),
 ('change_res.php', 'Change Reservation', 'ftsbar', false)
 ;
