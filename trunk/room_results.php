@@ -1,6 +1,6 @@
 <?
 	require_once 'inc/html_temp.inc';
-        template_start(basename(__FILE__), 'HRR', 'Harvard Room Reservation &sect; Available Rooms', '.');
+        template_start(basename(__FILE__), 'HRR', 'Available Rooms', '.');
 ?>
 <div>
 	<? print_r($_SESSION) ?>

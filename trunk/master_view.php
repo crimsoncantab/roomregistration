@@ -4,7 +4,7 @@
         template_start(basename(__FILE__), 'HRR', 'Master View', '.');
 ?>
 <div>
-Master View
+All reservations.  Click on row to modify.
 <?
         print_r($_SESSION);
 	$events=currentRes();
