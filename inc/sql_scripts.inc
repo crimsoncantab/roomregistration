@@ -61,6 +61,9 @@ AND MONTH(start_time)=? AND DAY(start_time)=?';
 #gets information for a particular room
 $query_get_rooms='SELECT * FROM room WHERE capacity>=? AND capacity<=?'; #TODO
 
+#gets email of uid
+$query_get_email='SELECT email FROM users WHERE huid=?';
+
 #gets every room
 $query_get_all_rooms='SELECT * FROM room';
 
@@ -74,6 +77,13 @@ $query_get_event='SELECT * FROM events WHERE event_id = ?';
 #gets intformation for a particular date
 $query_get_date=''; #TODO
 
+
+function getEmailAddr($uid)
+{
+	$query=$GLOBALS['query_get_email'];
+	$result=mysql_safe($query, array($uid));
+	return $result;
+}
 
 function getAllRooms() {
 	$query=$GLOBALS['query_get_all_rooms'];
