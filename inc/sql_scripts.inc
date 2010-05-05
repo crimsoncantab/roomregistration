@@ -55,7 +55,7 @@ $query_events_date_range_room='SELECT * FROM events WHERE'.
     ' AND room=? AND building=? AND event_id != ?';
 
 
-$query_get_room_res='SELECT start_time,end_time FROM events WHERE room=? AND building=? 
+$query_get_room_res='SELECT start_time,end_time,description FROM events WHERE room=? AND building=? 
 AND MONTH(start_time)=? AND DAY(start_time)=?';
 
 #gets information for a particular room
