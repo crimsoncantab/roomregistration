@@ -17,6 +17,7 @@ try {
     $desc = $_POST['description'];
     $start = $_POST['start_time'];
     $end = $_POST['end_time'];
+	$priority = $_POST['priority'];
     $start_time = mktime((int)$start, ($start % 1) * 60, 0, $month, $day);
     $end_time = mktime((int)$end, ($end % 1) * 60, 0, $month, $day);
 } catch (Exception $e) {
