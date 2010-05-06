@@ -54,6 +54,10 @@ $query_curr_user_res='SELECT * FROM events WHERE huid=? ORDER BY start_time';
 $query_get_room_res='SELECT start_time,end_time,description FROM events WHERE room=? AND building=? 
 AND MONTH(start_time)=? AND DAY(start_time)=?';
 
+#gets reservations for a room based on day of week
+$query_get_room_res_recur='SELECT start_time,end_time,description FROM events WHERE room=? AND building=?
+AND (recurring=? OR (recurring=0 AND DAYOFWEEK(start_time)=?))';
+
 #gets an event
 $query_get_event='SELECT * FROM events WHERE event_id = ?';
 
@@ -144,6 +148,11 @@ function getRoomRes($room,$building,$month,$day) {
     $result=mysql_safe($query, array($room,$building,$month,$day));
     return $result;
 }
+function getRoomResPattern($room,$building,$day_of_week) {
+    $query=$GLOBALS['query_get_room_res_recur'];
+    $result=mysql_safe($query, array($room,$building,$day_of_week,$day_of_week));
+    return $result;
+}
 
 function authUser($uid,$pwd) {
     $query=$GLOBALS['query_auth_user'];
@@ -171,8 +180,6 @@ function getRooms($capacity,$projector) {
     if($capacity>=50)
         $ubound+=200;
     if(!strcmp($projector,"true")) {
-        //echo "tasdfasdf";
-        //echo $capacity;
         $query .= " AND projector=true";
     }
     $result=mysql_safe($query,array($lbound,$ubound));
@@ -188,8 +195,6 @@ function getBuildingRooms($building,$capacity,$projector) {
         $ubound+=200;
     $query .= " AND building=?";
     if(!strcmp($projector,"true")) {
-        //echo "tasdfasdf";
-        //echo $capacity;
         $query .= " AND projector=true";
     }
     $result=mysql_safe($query,array($lbound,$ubound,$building));
@@ -203,8 +208,6 @@ function getCampusRooms($campus,$capacity,$projector) {
     if($capacity>=50)
         $ubound+=200;
     if(!strcmp($projector,"true")) {
-        //echo "tasdfasdf";
-        //echo $capacity;
         $query .= " AND projector=true";
     }
     $result=mysql_safe($query,array($lbound,$ubound,$campus));

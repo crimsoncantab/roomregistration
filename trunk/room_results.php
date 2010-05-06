@@ -3,13 +3,12 @@ require_once 'inc/html_temp.inc';
 template_start(basename(__FILE__), 'HRR', 'Available Rooms', '.', true);
 ?>
 <div>
-    <!--<? print_r($_SESSION) ?>
-    <? print_r($_GET) ?>-->
     <?
-    if($_GET['campus']=="")
-        echo 'no campus';
-    else
-        echo 'campus selected';
+//    if($_GET['campus']=="")
+//        echo 'no campus';
+//    else
+//        echo 'campus selected';
+    $recurring = isset ($_GET['recurring']);
     if($_GET['campus']==''&&$_GET['building']=='')
         $result=getRooms($_GET['capacity'],$_GET['projector']);
     else {
@@ -20,10 +19,18 @@ template_start(basename(__FILE__), 'HRR', 'Available Rooms', '.', true);
     }
     ?>
     <form action="handle_req.php" method="post" name="handle_req" id="handle_req">
-        <input type="hidden" name="room" value="" />
-        <input type="hidden" name="building" value="" />
+        <? if ($recurring) {
+            foreach ($_GET['recurring'] as $rec) {
+                ?>
+        <input type="hidden" name="recurring[]" value="<?echo $rec;?>" />
+                <?
+            }
+        } else {?>
         <input type="hidden" name="month" value="<?echo $_GET['month'];?>" />
         <input type="hidden" name="day" value="<?echo $_GET['day'];?>" />
+            <?}?>
+        <input type="hidden" name="room" value="" />
+        <input type="hidden" name="building" value="" />
         <input type="hidden" name="start_time" value="" />
         <input type="hidden" name="end_time" value="" />
         <span>Description:</span>
@@ -63,10 +70,22 @@ template_start(basename(__FILE__), 'HRR', 'Available Rooms', '.', true);
                 ?>
             <td>
                     <?
-                    $result2=getRoomRes($row['room_num'], $row['building'], $_GET['month'], $_GET['day']);
-                    while($row2 = mysql_fetch_array($result2)) {
-                        for($i = 0; $i < mysql_num_fields($result2); $i++) {
-                            echo $row2[$i].'<br />';
+                    if ($recurring) {
+                        for ($j = 0; $j < count($_GET['recurring']); $j++) {
+                            $result2 = getRoomResPattern($room, $building, $_GET['recurring'][$j]);
+                            while($row2 = mysql_fetch_array($result2)) {
+                                for($i = 0; $i < mysql_num_fields($result2); $i++) {
+                                    echo $row2[$i].'<br />';
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        $result2=getRoomRes($row['room_num'], $row['building'], $_GET['month'], $_GET['day']);
+                        while($row2 = mysql_fetch_array($result2)) {
+                            for($i = 0; $i < mysql_num_fields($result2); $i++) {
+                                echo $row2[$i].'<br />';
+                            }
                         }
                     }
                     ?>
@@ -93,13 +112,13 @@ template_start(basename(__FILE__), 'HRR', 'Available Rooms', '.', true);
                        onclick="pop_sub_form('<?echo $row_i;?>', '<?echo $row['room_num'];?>', '<?echo $row['building'];?>')"/>
             </td>
         </tr>
-            <?
-            $row_i++;
-        }
-        ?>
+                <?
+                $row_i++;
+            }
+            ?>
     </table>
 </div>
 
-<?
-template_end();
+    <?
+    template_end();
 ?>

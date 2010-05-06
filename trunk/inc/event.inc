@@ -17,6 +17,8 @@ class Event {
         $this->has_conflicts = NULL;
         if ($sql_row) {
             $this->data = $sql_row;
+            $this->data['start_time'] = strtotime( $this->data['start_time'] );
+            $this->data['end_time'] = strtotime( $this->data['end_time'] );
         } else {
             $this->data = array();
         }
@@ -24,7 +26,6 @@ class Event {
     }
 
     public function change_from_post() {
-        print_r($_POST);
         $id = $this->getId();
         if (!isset($id)) { #this is a new event
             $this->data['huid'] = $_SESSION['uid'];
@@ -110,6 +111,17 @@ class Event {
         return $this->data['description'];
     }
 
+    public function getStartFormatted() {
+        if ($this->isRecurring()) {
+            return date("g:i a",$this->getStart());
+        }
+        return date("F j, Y, g:i a",$this->getStart());
+    }
+
+    public function getEndFormatted() {
+        return date("g:i a",$this->getEnd());
+    }
+
     public function getStart() {
         return $this->data['start_time'];
     }
@@ -125,6 +137,20 @@ class Event {
     public function getRec() {
         return $this->data['recurring'];
     }
+    private static function retDayOfWeek($num) {
+        if ($num==0) return 'None';
+        if ($num==1) return 'Sunday';
+        if ($num==2) return 'Monday';
+        if ($num==3) return 'Teusday';
+        if ($num==4) return 'Wednesday';
+        if ($num==5) return 'Thursday';
+        if ($num==6) return 'Friday';
+        return 'Saturday';
+    }
+
+    public function getRecFormatted() {
+        return Event::retDayOfWeek( $this->getRec());
+    }
 
     public function isRecurring() {
         return $this->data['recurring'] != 0;
@@ -136,8 +162,8 @@ class Event {
             echo  ' class="clickable" onclick="javascript:window.location=\'change_res.php?event_id='.$this->getId().'\'"';
         }
         echo '><td>'.$this->getUser().'</td><td>'.$this->getRoom().'</td><td>'.$this->getBldg().'</td>'.
-                '<td>'.$this->getReqDate().'</td><td>'.$this->getDesc().'</td><td>'.$this->getStart().'</td>'.
-                '<td>'.$this->getEnd().'</td><td>'.$this->getPriority().'</td><td>'.$this->getRec().'</td></tr>';
+                '<td>'.$this->getReqDate().'</td><td>'.$this->getDesc().'</td><td>'.$this->getStartFormatted().'</td>'.
+                '<td>'.$this->getEndFormatted().'</td><td>'.$this->getPriority().'</td><td>'.$this->getRecFormatted().'</td></tr>';
     }
 
     private function checkForConflicts($events) {
@@ -189,23 +215,31 @@ class Event {
         } else {
             throw new Exception('Conflicts with other events');
         }
-        #notify user
 
         return $this->getId();
     }
 
 
     private function notify_user($operation) {
-        $message = 'The following event has been '.$operation.':\n';
-        $message .= 'Description: '.$this->getDesc().'\n';
-        $message .= 'Time: '.$this->getStart().' to '.$this->getEnd().'\n';
-        $message .= 'Room: '.$this->getRoom().' Building: '.$this->getBldg().'\n\n';
-        if ($this->isRecurring()) $message .= 'Recurrence Pattern: '.$this->getRec();
-        $message .= 'The user that '.$operation.' the event: '.$_SESSION['username'];
+        $message = 'The following event has been '.$operation.":\n";
+        $message .= 'Description: '.$this->getDesc()."\n";
+        $message .= 'Time: '.$this->getStartFormatted().' to '.$this->getEndFormatted()."\n";
+        $message .= 'Room: '.$this->getRoom().' Building: '.$this->getBldg()."\n";
+        if ($this->isRecurring()) $message .= 'Recurrence Pattern: ';
+        {
+            if (is_array($this->getRec())) {
+                foreach($this->getRec() as $rec) {
+                    $message .= date('l', $rec).' ';
+                }
+            }
+            else $message .= $this->getRecFormatted();
+        }
+        $message .="\n\n".'The user that '.$operation.' the event: '.$_SESSION['username'];
 
         $subj = 'Room Reservation - event '.$operation;
         email($subj, $this->getUser(), $message);
     }
 }
+
 
 ?>

@@ -4,17 +4,17 @@ template_start(basename(__FILE__), 'HRR', 'Dashboard', '.');
 ?>
 <div>
     Your current reservations.  Click on a reservation to edit it.
+    <table class="visible">
     <?
     $events=currentUserRes();
-    echo '<table class="visible">';
     Event::getEventHeaderRow();
 
     foreach ($events as $event) {
         $event->getHtmlRow();
     }
 
-    echo '</table>';
     ?>
+    </table>
 
 </div>
 <?
