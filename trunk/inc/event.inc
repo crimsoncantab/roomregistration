@@ -7,9 +7,9 @@ class Event {
 
     static public function getEventHeaderRow() {
         echo '<tr>'.
-        '<th>User</th><th>Room</th><th>Building</th>'.
-        '<th>Request Time</th><th>Desc</th><th>Start Time</th>'.
-        '<th>End Time</th><th>Priority</th></tr>';//<th>Recurrence Pattern</th>
+                '<th>User</th><th>Room</th><th>Building</th>'.
+                '<th>Request Time</th><th>Desc</th><th>Start Time</th>'.
+                '<th>End Time</th><th>Priority</th></tr>';//<th>Recurrence Pattern</th>
     }
     public function  __construct($sql_row=false, $change_from_post = false) {
         $this->to_evict = array();
@@ -22,39 +22,42 @@ class Event {
         if ($change_from_post) $this->change_from_post();
     }
 
-    #not being used yet
     public function change_from_post() {
-            if (isset ($_POST['description'])) {
-                $this->data['description'] = $_POST['description'];
+        if (isset ($_POST['description'])) {
+            $this->data['description'] = $_POST['description'];
+        }
+        if (isset ($_POST['priority'])) {
+            $priority = $_POST['priority'];
+            $priority = min(array(max(array($priority, 1)), $_SESSION['max_priority']));
+            $this->data['priority'] = $priority;
+        }
+        if (isset ($_POST['room'])) {
+            $this->data['room'] = $_POST['room'];
+            if (isset ($_POST['building'])) {
+                $this->data['building'] = $_POST['building'];
             }
-            if (isset ($_POST['priority'])) {
-                $priority = $_POST['priority'];
-                $priority = min(array(max(array($priority, 1)), $_SESSION['max_priority']));
-                $this->data['priority'] = $priority;
+        }
+        if (isset ($_POST['start_time'])) {
+            $month= $_POST['month'];
+            $day = $_POST['day'];
+            $start = $_POST['start_time'];
+            $end = $_POST['end_time'];
+            if ($start == $end) throw new Exception('Start and End Date cannot be the same');
+            else if ($start > $end) {
+                $temp = $end;
+                $end = $start;
+                $start = $temp;
             }
-            if (isset ($_POST['room'])) {
-                $this->data['room'] = $_POST['room'];
-                if (isset ($_POST['building'])) {
-                    $this->data['building'] = $_POST['building'];
-                }
-            }
-            if (isset ($_POST['start_time'])) {
-                $month= $_POST['month'];
-                $day = $_POST['day'];
-                $start = $_POST['start_time'];
-                $end = $_POST['end_time'];
-                if ($start == $end) throw new Exception('Start and End Date cannot be the same');
-                else if ($start > $end) {$temp = $end; $end = $start; $start = $temp; }
-                if ($start < $GLOBALS['beg'] || $end > $GLOBALS['end'] || $month < 1 ||
-                        $month > 12 || $day < 1 || $day > 31) throw new Exception('Dates out of range.');
-                $this->data['start_time'] = mktime((int)$start, (int)(($start-floor($start)) * 60), 0, $month, $day);
-                $this->data['end_time'] = mktime((int)$end, (int)(($end-floor($end)) * 60), 0, $month, $day);
-            }
-            $id = $this->getId();
-            if (!isset($id)) { #this is a new event
-                $this->data['huid'] = $_SESSION['uid'];
-                $this->data['event_id'] = NULL;
-            }
+            if ($start < $GLOBALS['beg'] || $end > $GLOBALS['end'] || $month < 1 ||
+                    $month > 12 || $day < 1 || $day > 31) throw new Exception('Dates out of range.');
+            $this->data['start_time'] = mktime((int)$start, (int)(($start-floor($start)) * 60), 0, $month, $day);
+            $this->data['end_time'] = mktime((int)$end, (int)(($end-floor($end)) * 60), 0, $month, $day);
+        }
+        $id = $this->getId();
+        if (!isset($id)) { #this is a new event
+            $this->data['huid'] = $_SESSION['uid'];
+            $this->data['event_id'] = NULL;
+        }
     }
 
     public function canEdit() {
@@ -112,8 +115,8 @@ class Event {
             echo  ' class="clickable" onclick="javascript:window.location=\'change_res.php?event_id='.$this->getId().'\'"';
         }
         echo '><td>'.$this->getUser().'</td><td>'.$this->getRoom().'</td><td>'.$this->getBldg().'</td>'.
-        '<td>'.$this->getReqDate().'</td><td>'.$this->getDesc().'</td><td>'.$this->getStart().'</td>'.
-        '<td>'.$this->getEnd().'</td><td>'.$this->getPriority().'</td></tr>';//<td>'.$this->getRec().'</td>
+                '<td>'.$this->getReqDate().'</td><td>'.$this->getDesc().'</td><td>'.$this->getStart().'</td>'.
+                '<td>'.$this->getEnd().'</td><td>'.$this->getPriority().'</td></tr>';//<td>'.$this->getRec().'</td>
     }
 
     #only true if we can't evict someone

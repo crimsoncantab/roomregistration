@@ -37,7 +37,7 @@ $query_get_buildings='SELECT id,name FROM building';
 #add reservation.  takes room info, other variables...
 #assumes time/location are available, returns event_id
 $query_add_res='INSERT INTO events(huid,room,building,date_req,description,start_time,end_time,priority, recurring) VALUES'.
-'(?,?,?,NOW(),?,FROM_UNIXTIME(?),FROM_UNIXTIME(?),?,NULL)';
+        '(?,?,?,NOW(),?,FROM_UNIXTIME(?),FROM_UNIXTIME(?),?,NULL)';
 
 #delete reservation.
 $query_remove_res='DELETE FROM events WHERE event_id = ?';
@@ -48,9 +48,9 @@ $query_update_res='UPDATE events SET room = ?, building = ?, start_time = FROM_U
 #find reservation(s) during certain time interval and for certain room
 #takes room and time interval
 $query_events_date_range_room='SELECT * FROM events WHERE'.
-    ' FROM_UNIXTIME(?) < end_time'.
-    ' AND FROM_UNIXTIME(?) > start_time'.
-    ' AND room=? AND building=? AND event_id != ?';
+        ' FROM_UNIXTIME(?) < end_time'.
+        ' AND FROM_UNIXTIME(?) > start_time'.
+        ' AND room=? AND building=? AND event_id != ?';
 
 
 $query_get_room_res='SELECT start_time,end_time,description FROM events WHERE room=? AND building=? 
@@ -63,7 +63,7 @@ $query_get_rooms='SELECT * FROM room WHERE capacity>=? AND capacity<=?'; #TODO
 $query_get_email='SELECT email FROM users WHERE huid=?';
 
 #gets every room
-$query_get_all_rooms='SELECT * FROM room';
+$query_get_all_rooms='SELECT room_num,building FROM room';
 
 #gets information for a particular room
 $query_get_campus_rooms='SELECT room_num,building,projector,capacity 
@@ -76,156 +76,142 @@ $query_get_event='SELECT * FROM events WHERE event_id = ?';
 $query_get_date=''; #TODO
 
 
-function getEmailAddr($uid)
-{
-	$query=$GLOBALS['query_get_email'];
-	$result=mysql_safe($query, array($uid));
-	return $result;
+function getEmailAddr($uid) {
+    $query=$GLOBALS['query_get_email'];
+    $result=mysql_safe($query, array($uid));
+    return $result;
 }
 
 function getAllRooms() {
-	$query=$GLOBALS['query_get_all_rooms'];
-	$result=mysql_safe($query, array($room,$building,$month,$day));
-	return $result;
+    $query=$GLOBALS['query_get_all_rooms'];
+    $result=mysql_safe($query);
+    return $result;
 }
 
-function getRoomRes($room,$building,$month,$day)
-{
-	$query=$GLOBALS['query_get_room_res'];
-	$result=mysql_safe($query, array($room,$building,$month,$day));
-	return $result;
+function getRoomRes($room,$building,$month,$day) {
+    $query=$GLOBALS['query_get_room_res'];
+    $result=mysql_safe($query, array($room,$building,$month,$day));
+    return $result;
 }
 
 function authUser($uid,$pwd) {
-	$query=$GLOBALS['query_auth_user'];
-	$result=mysql_safe($query, array($uid));
-	$data=mysql_fetch_array($result);
-	if(mysql_num_rows($result)==0)
-	{
-		$_SESSION['error']="User not in db";
-		return false;
-	}
-	if(strcmp($pwd,$data['pwd']))
-	{
-		$_SESSION['error']="Invalid password";
-		return false;
-	}
-	else
-	{
-		set_logged_in($uid,$data['name'], $data['role'], $data['write_events'], $data['reserv_priority']);
-		return true;
-	}
-	
+    $query=$GLOBALS['query_auth_user'];
+    $result=mysql_safe($query, array($uid));
+    $data=mysql_fetch_array($result);
+    if(mysql_num_rows($result)==0) {
+        $_SESSION['error']="User not in db";
+        return false;
+    }
+    if(strcmp($pwd,$data['pwd'])) {
+        $_SESSION['error']="Invalid password";
+        return false;
+    }
+    else {
+        set_logged_in($uid,$data['name'], $data['role'], $data['write_events'], $data['reserv_priority']);
+        return true;
+    }
+
 }
 
-function getRooms($capacity,$projector)
-{
-	$query=$GLOBALS['query_get_rooms'];
-	$lbound=$capacity-3;
-	$ubound=$capacity+10;
-	if($capacity>=50)
-		$ubound+=200;
-	if(!strcmp($projector,"true"))
-	{
-		//echo "tasdfasdf";
-		//echo $capacity;
-		$query .= " AND projector=true";
-	}
-	$result=mysql_safe($query,array($lbound,$ubound));
-	return $result;
+function getRooms($capacity,$projector) {
+    $query=$GLOBALS['query_get_rooms'];
+    $lbound=$capacity-3;
+    $ubound=$capacity+10;
+    if($capacity>=50)
+        $ubound+=200;
+    if(!strcmp($projector,"true")) {
+        //echo "tasdfasdf";
+        //echo $capacity;
+        $query .= " AND projector=true";
+    }
+    $result=mysql_safe($query,array($lbound,$ubound));
+    return $result;
 }
 
 
-function getBuildingRooms($building,$capacity,$projector)
-{
-	$query=$GLOBALS['query_get_rooms'];
-	$lbound=$capacity-3;
-	$ubound=$capacity+10;
-	if($capacity>=50)
-		$ubound+=200;
-	$query .= " AND building=?";
-	if(!strcmp($projector,"true"))
-	{
-		//echo "tasdfasdf";
-		//echo $capacity;
-		$query .= " AND projector=true";
-	}
-	$result=mysql_safe($query,array($lbound,$ubound,$building));
-	return $result;
+function getBuildingRooms($building,$capacity,$projector) {
+    $query=$GLOBALS['query_get_rooms'];
+    $lbound=$capacity-3;
+    $ubound=$capacity+10;
+    if($capacity>=50)
+        $ubound+=200;
+    $query .= " AND building=?";
+    if(!strcmp($projector,"true")) {
+        //echo "tasdfasdf";
+        //echo $capacity;
+        $query .= " AND projector=true";
+    }
+    $result=mysql_safe($query,array($lbound,$ubound,$building));
+    return $result;
 }
 
-function getCampusRooms($campus,$capacity,$projector)
-{
-	$query=$GLOBALS['query_get_campus_rooms'];
-	$lbound=$capacity-3;
-	$ubound=$capacity+10;
-	if($capacity>=50)
-		$ubound+=200;
-	if(!strcmp($projector,"true"))
-	{
-		//echo "tasdfasdf";
-		//echo $capacity;
-		$query .= " AND projector=true";
-	}
-	$result=mysql_safe($query,array($lbound,$ubound,$campus));
-	return $result;
+function getCampusRooms($campus,$capacity,$projector) {
+    $query=$GLOBALS['query_get_campus_rooms'];
+    $lbound=$capacity-3;
+    $ubound=$capacity+10;
+    if($capacity>=50)
+        $ubound+=200;
+    if(!strcmp($projector,"true")) {
+        //echo "tasdfasdf";
+        //echo $capacity;
+        $query .= " AND projector=true";
+    }
+    $result=mysql_safe($query,array($lbound,$ubound,$campus));
+    return $result;
 }
 
-function getBuildings()
-{
-	$query=$GLOBALS['query_get_buildings'];
-	$result=mysql_safe($query,array());
-	return $result;
+function getBuildings() {
+    $query=$GLOBALS['query_get_buildings'];
+    $result=mysql_safe($query,array());
+    return $result;
 }
 
-function getCampusRegions()
-{
-	$query=$GLOBALS['query_get_campuses'];
-	$result=mysql_safe($query,array());
-	return $result;
+function getCampusRegions() {
+    $query=$GLOBALS['query_get_campuses'];
+    $result=mysql_safe($query,array());
+    return $result;
 }
 
 function getEvent($event_id) {
-    	$query=$GLOBALS['query_get_event'];
-	$result=mysql_safe($query,array($event_id));
-        $row = mysql_fetch_array($result);
-        return new Event($row);
+    $query=$GLOBALS['query_get_event'];
+    $result=mysql_safe($query,array($event_id));
+    $row = mysql_fetch_array($result);
+    return new Event($row);
 }
 
 function currentRes() {
-    	$query=$GLOBALS['query_res'];
-	$result=mysql_safe($query,array());
-        while($row = mysql_fetch_array($result)) {
-            $events[] = new Event($row);
-        }
-	return $events;
+    $query=$GLOBALS['query_res'];
+    $result=mysql_safe($query,array());
+    while($row = mysql_fetch_array($result)) {
+        $events[] = new Event($row);
+    }
+    return $events;
 }
 
-function currentUserRes() 
-{
-	$query=$GLOBALS['query_curr_user_res'];
-	$result=mysql_safe($query, array($_SESSION['uid']));
-        $events=array();
-        while($row = mysql_fetch_array($result)) {
-            $events[] = new Event($row);
-        }
-	return $events;
+function currentUserRes() {
+    $query=$GLOBALS['query_curr_user_res'];
+    $result=mysql_safe($query, array($_SESSION['uid']));
+    $events=array();
+    while($row = mysql_fetch_array($result)) {
+        $events[] = new Event($row);
+    }
+    return $events;
 }
 
 function delete_res($event_id) {
-        $query=$GLOBALS['query_remove_res'];
-        mysql_safe($query, array($event_id));
+    $query=$GLOBALS['query_remove_res'];
+    mysql_safe($query, array($event_id));
 }
 
 function add_res($room, $building, $desc, $start_time, $end_time, $priority=0) {
-        $query=$GLOBALS['query_add_res'];
-	$event_id=mysql_safe($query, array($_SESSION['uid'], $room, $building, $desc, $start_time, $end_time, $priority));
-	return $event_id;
+    $query=$GLOBALS['query_add_res'];
+    $event_id=mysql_safe($query, array($_SESSION['uid'], $room, $building, $desc, $start_time, $end_time, $priority));
+    return $event_id;
 }
 
 function update_res($event_id, $room, $building, $start_time, $end_time) {
-        $query=$GLOBALS['query_update_res'];
-	mysql_safe($query, array($room, $building, $start_time, $end_time, $event_id));
+    $query=$GLOBALS['query_update_res'];
+    mysql_safe($query, array($room, $building, $start_time, $end_time, $event_id));
 }
 
 #for finding conflicts.  $ignore_id is for when we update an event,
@@ -243,8 +229,7 @@ function resDateRangeRoom($start_time, $end_time, $room, $bldg, $ignore_id=-1) {
 function auth_page($filename, $redir) {
     $query=$GLOBALS['query_auth_page'];
     $result=mysql_safe($query, array($filename, get_user_perm()));
-    if(mysql_num_rows($result) == 0)
-    {
+    if(mysql_num_rows($result) == 0) {
         redirect($redir);
     }
 }

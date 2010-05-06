@@ -1,22 +1,22 @@
 <?
-	require_once 'inc/html_temp.inc';
-        template_start(basename(__FILE__), 'HRR', 'Dashboard', '.');
+require_once 'inc/html_temp.inc';
+template_start(basename(__FILE__), 'HRR', 'Dashboard', '.');
 ?>
 <div>
     Your current reservations.  Click on a reservation to edit it.
-<?
-	$events=currentUserRes();
-        echo '<table class="visible">';
-        Event::getEventHeaderRow();
+    <?
+    $events=currentUserRes();
+    echo '<table class="visible">';
+    Event::getEventHeaderRow();
 
-        foreach ($events as $event) {
-            $event->getHtmlRow();
-        }
+    foreach ($events as $event) {
+        $event->getHtmlRow();
+    }
 
-        echo '</table>';
-?>
+    echo '</table>';
+    ?>
 
 </div>
 <?
-	template_end();
+template_end();
 ?>

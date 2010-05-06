@@ -14,11 +14,11 @@ function is_logged_in() {
 }
 
 function set_logged_in($uid,$username,$role,$can_edit,$max_priority) {
-	$_SESSION['uid'] = $uid;
-	$_SESSION['username'] = $username;
-	$_SESSION['perm'] = $role;
-        $_SESSION['can_edit'] = $can_edit;
-        $_SESSION['max_priority'] = $max_priority;
+    $_SESSION['uid'] = $uid;
+    $_SESSION['username'] = $username;
+    $_SESSION['perm'] = $role;
+    $_SESSION['can_edit'] = $can_edit;
+    $_SESSION['max_priority'] = $max_priority;
 }
 
 function get_user_perm() {
@@ -54,12 +54,11 @@ function mysql_safe($query, $params=false) {
 }
 
 
-function email($subj, $uid, $msg)
-{
-	$result=getEmailAddr($uid);
-	$emaila=mysql_fetch_array($result);
-	$email=$emaila['email'];
-	mail($email, $subj, $msg);
+function email($subj, $uid, $msg) {
+    $result=getEmailAddr($uid);
+    $emaila=mysql_fetch_array($result);
+    $email=$emaila['email'];
+    mail($email, $subj, $msg);
 
 }
 
