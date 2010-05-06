@@ -24,7 +24,10 @@ if ($update) $event = getEvent($_GET['event_id']);
     }
     ?>
     <form action="handle_req.php" method="post" id="change_form">
-        <input type="hidden" name="event_id" value="<?echo $_GET['event_id']?>" />
+<?
+if ($update) echo '<input type="hidden" name="event_id" value="'.$_GET['event_id'].'" />';
+if (!($update && $event->isRecurring())) {
+?>
         Month:
         <select name="month">
             <option selected></option>
@@ -47,6 +50,9 @@ if ($update) $event = getEvent($_GET['event_id']);
             }
             ?>
         </select>
+<?
+}
+?>
         Priority:
         <select name="priority">
             <option selected></option>
@@ -103,6 +109,21 @@ if ($update) $event = getEvent($_GET['event_id']);
             }
             ?>
         </select>
+        <br />
+<?
+if (!$update) {
+?>
+        Recurrence:
+        S<input type="checkbox" name="recurring[]" value="1" />
+        |M<input type="checkbox" name="recurring[]" value="2" />
+        |T<input type="checkbox" name="recurring[]" value="3" />
+        |W<input type="checkbox" name="recurring[]" value="4" />
+        |Th<input type="checkbox" name="recurring[]" value="5" />
+        |F<input type="checkbox" name="recurring[]" value="6" />
+        |Sa<input type="checkbox" name="recurring[]" value="7" />
+<?
+}
+?>
         <br />
         <input type="submit" value="Submit" name="submit" />
     </form>

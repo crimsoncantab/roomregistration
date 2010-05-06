@@ -15,33 +15,19 @@ try {
         $event = getEvent($_POST['event_id']);
         $event->change_from_post();
         if (!$event->canEdit()) {
-            $_SESSION['error'] = 'Modification not allowed.';
-            redirect($redir);
+            throw new Exception('Modification not allowed.');
         }
     } else {
         $event->change_from_post();
     }
-
-} catch (Exception $e) {
-    $_SESSION['error']='Bad arguments: '.$e->getMessage();
-    redirect($redir);
-    abort_transaction();
-}
-
-try {
     if (isset ($_POST['delete'])) {
         $event->delete();
-        commit_transaction();
         $_SESSION['error']='Event deleted!';
-    }
-    else if ($event->hasConflicts()) {
-        abort_transaction();
-        $_SESSION['error']='Time not available.';
     } else {
         $event_id = $event->persist();
-        commit_transaction();
         $_SESSION['error']='Event '.$event_id.' reserved!';
     }
+    commit_transaction();
 } catch (Exception $e) {
     abort_transaction();
     $_SESSION['error']='Error while handling reservation request: '.$e->getMessage();

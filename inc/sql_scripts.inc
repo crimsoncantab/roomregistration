@@ -13,14 +13,12 @@ require_once 'event.inc';
 #a call to execute this query:
 #mysql_safe($query, array($var1, $var2));
 
+#USER QUERIES
 #authenticates user.  takes username, phash params, returns user info
 $query_auth_user='SELECT * FROM users NATURAL JOIN priv WHERE huid=?';
 
-#get user's current events.
-$query_curr_user_res='SELECT * FROM events WHERE huid=? ORDER BY start_time';
-
-#get all res
-$query_res='SELECT * FROM events ORDER BY start_time';
+#gets email of uid
+$query_get_email='SELECT email FROM users WHERE huid=?';
 
 #check webpage permissions against a user.
 $query_auth_page='SELECT * FROM pageperm WHERE page=? AND LOCATE(?, perm) != 0';
@@ -28,39 +26,15 @@ $query_auth_page='SELECT * FROM pageperm WHERE page=? AND LOCATE(?, perm) != 0';
 #get available links
 $query_get_links='SELECT page, display FROM pageperm WHERE LOCATE(?, perm) != 0 AND in_nav=true';
 
+#LOCATION QUERIES
 #get campuses
 $query_get_campuses='SELECT id,name FROM campus';
 
 #get buildings
 $query_get_buildings='SELECT id,name FROM building';
 
-#add reservation.  takes room info, other variables...
-#assumes time/location are available, returns event_id
-$query_add_res='INSERT INTO events(huid,room,building,date_req,description,start_time,end_time,priority, recurring) VALUES'.
-        '(?,?,?,NOW(),?,FROM_UNIXTIME(?),FROM_UNIXTIME(?),?,NULL)';
-
-#delete reservation.
-$query_remove_res='DELETE FROM events WHERE event_id = ?';
-
-#update reservation
-$query_update_res='UPDATE events SET room = ?, building = ?, start_time = FROM_UNIXTIME(?), end_time = FROM_UNIXTIME(?) WHERE event_id = ?';
-
-#find reservation(s) during certain time interval and for certain room
-#takes room and time interval
-$query_events_date_range_room='SELECT * FROM events WHERE'.
-        ' FROM_UNIXTIME(?) < end_time'.
-        ' AND FROM_UNIXTIME(?) > start_time'.
-        ' AND room=? AND building=? AND event_id != ?';
-
-
-$query_get_room_res='SELECT start_time,end_time,description FROM events WHERE room=? AND building=? 
-AND MONTH(start_time)=? AND DAY(start_time)=?';
-
 #gets information for a particular room
 $query_get_rooms='SELECT * FROM room WHERE capacity>=? AND capacity<=?'; #TODO
-
-#gets email of uid
-$query_get_email='SELECT email FROM users WHERE huid=?';
 
 #gets every room
 $query_get_all_rooms='SELECT room_num,building FROM room';
@@ -69,12 +43,89 @@ $query_get_all_rooms='SELECT room_num,building FROM room';
 $query_get_campus_rooms='SELECT room_num,building,projector,capacity 
 FROM room,building WHERE id=building AND capacity>=? AND capacity<=? AND region=?';
 
+#EVENT QUERIES A - READS
+#get all res
+$query_res='SELECT * FROM events ORDER BY start_time';
+
+#get user's current events.
+$query_curr_user_res='SELECT * FROM events WHERE huid=? ORDER BY start_time';
+
+#gets reservations for a room based on month and day
+$query_get_room_res='SELECT start_time,end_time,description FROM events WHERE room=? AND building=? 
+AND MONTH(start_time)=? AND DAY(start_time)=?';
+
 #gets an event
 $query_get_event='SELECT * FROM events WHERE event_id = ?';
 
-#gets intformation for a particular date
-$query_get_date=''; #TODO
+#find reservation(s) during certain time interval and for certain room
+#takes room and time interval
+$query_events_date_range_room='SELECT * FROM events WHERE'.
+        ' FROM_UNIXTIME(?) < end_time'.
+        ' AND FROM_UNIXTIME(?) > start_time'.
+        ' AND room=? AND building=? AND event_id != ?'.
+        ' AND recurring=0';
 
+#gets all recurring events that fall in a time range
+#based on day of week, hour, and minute
+$query_get_recur_on_date='SELECT * FROM events WHERE '.
+        ' TIME(FROM_UNIXTIME(?)) < TIME(end_time)'.
+        ' AND TIME(FROM_UNIXTIME(?)) > TIME(start_time)'.
+        ' AND room=? AND building=? AND event_id != ?'.
+        ' AND recurring=DAYOFWEEK(FROM_UNIXTIME(?))';
+
+#gets all events that fall in a recurrence pattern
+#based on day of week, hour, and minute
+$query_get_recur_on_pattern='SELECT * FROM events WHERE '.
+        ' TIME(FROM_UNIXTIME(?)) < TIME(end_time)'.
+        ' AND TIME(FROM_UNIXTIME(?)) > TIME(start_time)'.
+        ' AND room=? AND building=? AND event_id != ?'.
+        ' AND (recurring=? OR (recurring=0 AND DAYOFWEEK(start_time)=?))';
+
+#moved into above query
+//#gets all nonrecurring events that fall in a recurrence pattern
+//$query_get_non_recur_in_pattern='SELECT * FROM events WHERE '.
+//        ' TIME(FROM_UNIXTIME(?)) < TIME(end_time)'.
+//        ' AND TIME(FROM_UNIXTIME(?)) > TIME(start_time)'.
+//        ' AND room=? AND building=? AND event_id != ?'.
+//        ' AND recurring=0 AND DAYOFWEEK(start_time)=?';
+
+
+#EVENT QUERIES B - WRITES
+#add reservation.  takes room info, other variables...
+#assumes time/location are available, returns event_id
+$query_add_res='INSERT INTO events(huid,room,building,date_req,description,start_time,end_time,priority, recurring) VALUES'.
+        '(?,?,?,NOW(),?,FROM_UNIXTIME(?),FROM_UNIXTIME(?),?,?)';
+
+#delete reservation.
+$query_remove_res='DELETE FROM events WHERE event_id = ?';
+
+#update reservation
+$query_update_res='UPDATE events SET room = ?, building = ?, start_time = FROM_UNIXTIME(?), end_time = FROM_UNIXTIME(?) WHERE event_id = ?';
+
+
+#for finding conflicts.  $ignore_id is for when we update an event,
+#it shouldn't conflict with itself
+function resDateRangeRoom($start_time, $end_time, $room, $bldg, $ignore_id=-1) {
+    $query=$GLOBALS['query_events_date_range_room'].' UNION '.$GLOBALS['query_get_recur_on_date'];
+    $params = array($start_time, $end_time, $room, $bldg, $ignore_id, $start_time, $end_time,$room, $bldg, $ignore_id,$start_time);
+    $result=mysql_safe($query, $params);
+    $events=array();
+    while($row = mysql_fetch_array($result)) {
+        $events[] = new Event($row);
+    }
+    return $events;
+}
+
+function resDatePatternRoom($start_time, $end_time, $room, $bldg, $day_of_week, $ignore_id=-1) {
+    $query=$GLOBALS['query_get_recur_on_pattern'];//.' UNION '.$GLOBALS['query_get_non_recur_in_pattern'];
+    $params = array($start_time, $end_time, $room, $bldg, $ignore_id, $day_of_week, $day_of_week);
+    $result=mysql_safe($query, $params);
+    $events=array();
+    while($row = mysql_fetch_array($result)) {
+        $events[] = new Event($row);
+    }
+    return $events;
+}
 
 function getEmailAddr($uid) {
     $query=$GLOBALS['query_get_email'];
@@ -162,13 +213,13 @@ function getCampusRooms($campus,$capacity,$projector) {
 
 function getBuildings() {
     $query=$GLOBALS['query_get_buildings'];
-    $result=mysql_safe($query,array());
+    $result=mysql_safe($query);
     return $result;
 }
 
 function getCampusRegions() {
     $query=$GLOBALS['query_get_campuses'];
-    $result=mysql_safe($query,array());
+    $result=mysql_safe($query);
     return $result;
 }
 
@@ -181,7 +232,7 @@ function getEvent($event_id) {
 
 function currentRes() {
     $query=$GLOBALS['query_res'];
-    $result=mysql_safe($query,array());
+    $result=mysql_safe($query);
     while($row = mysql_fetch_array($result)) {
         $events[] = new Event($row);
     }
@@ -203,27 +254,30 @@ function delete_res($event_id) {
     mysql_safe($query, array($event_id));
 }
 
-function add_res($room, $building, $desc, $start_time, $end_time, $priority=0) {
+//function add_res($room, $building, $desc, $start_time, $end_time, $priority=0, $recurring=NULL) {
+function add_res($event) {
     $query=$GLOBALS['query_add_res'];
-    $event_id=mysql_safe($query, array($_SESSION['uid'], $room, $building, $desc, $start_time, $end_time, $priority));
-    return $event_id;
-}
-
-function update_res($event_id, $room, $building, $start_time, $end_time) {
-    $query=$GLOBALS['query_update_res'];
-    mysql_safe($query, array($room, $building, $start_time, $end_time, $event_id));
-}
-
-#for finding conflicts.  $ignore_id is for when we update an event,
-#it shouldn't conflict with itself
-function resDateRangeRoom($start_time, $end_time, $room, $bldg, $ignore_id=-1) {
-    $query=$GLOBALS['query_events_date_range_room'];
-    $result=mysql_safe($query, array($start_time, $end_time, $room, $bldg, $ignore_id));
-    $events=array();
-    while($row = mysql_fetch_array($result)) {
-        $events[] = new Event($row);
+    $params = array($_SESSION['uid'],
+            $event->getRoom(), $event->getBldg(), $event->getDesc(),
+            $event->getStart(), $event->getEnd(), $event->getPriority());
+    if ($event->isRecurring()) {
+        foreach ($event->getRec() as $day_of_week) {
+            $params[7] = $day_of_week;
+            mysql_safe($query, $params);
+        }
     }
-    return $events;
+    else {
+        $params[] = $event->getRec();
+        mysql_safe($query, $params);
+    }
+    return get_last_id();
+}
+
+function update_res($event) {
+    $query=$GLOBALS['query_update_res'];
+    $params = array($event->getRoom(), $event->getBldg(),
+            $event->getStart(), $event->getEnd(), $event->getId());
+    mysql_safe($query, $params);
 }
 
 function auth_page($filename, $redir) {
