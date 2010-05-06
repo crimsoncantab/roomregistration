@@ -2,18 +2,17 @@
 	require_once 'inc/html_temp.inc';
         $update = isset($_GET['event_id']);
         $banner = ($update) ? 'Modify a Reservation':'Request a Room';
-        template_start(basename(__FILE__), 'HRR', $banner, 'home.php');
+        template_start(basename(__FILE__), 'HRR', $banner, 'home.php', true);
         if ($update) $event = getEvent($_GET['event_id']);
 ?>
 <div>
-Use the following form to <? echo ($update) ? 'change the' : 'add a'; ?> reservation:
+    <div>Use the following form to <? echo ($update) ? 'change the' : 'add a'; ?> reservation:</div>
 <?
 if ($update) {
 ?>
-    <form action="handle_req.php" method="POST">
+    <form action="handle_req.php" method="post" id="delete_form">
         <input type="hidden" name="event_id" value="<?echo $_GET['event_id']?>" />
-        <input type="hidden" name="delete" value="true" />
-        <input type="submit" value="Delete Event" name="submit_d" />
+        <input type="submit" value="Delete Event" name="delete" />
     </form>
     <table class="visible">
 <?
@@ -21,11 +20,11 @@ if ($update) {
     $event->getHtmlRow(false);
 ?>
     </table>
-<form action="handle_req.php" method="post" id="change_form">
-    <input type="hidden" name="event_id" value="<?echo $_GET['event_id']?>" />
 <?
 }
 ?>
+<form action="handle_req.php" method="post" id="change_form">
+    <input type="hidden" name="event_id" value="<?echo $_GET['event_id']?>" />
     Month:
     <select name="month">
             <option selected></option>
