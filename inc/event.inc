@@ -181,9 +181,14 @@ class Event {
     private function hasConflicts() {
         if (!isset($this->has_conflicts)) { //do logic only once
             if ($this->isRecurring()) {
-                foreach ($this->getRec() as $day_of_week) {
-                    $events = resDatePatternRoom($this->getStart(), $this->getEnd(), $this->getRoom(), $this->getBldg(), $day_of_week, $this->getId());
-                    $this->checkForConflicts($events);
+                if (is_array($this->getRec())) {
+                    foreach ($this->getRec() as $day_of_week) {
+                        $events = resDatePatternRoom($this->getStart(), $this->getEnd(), $this->getRoom(), $this->getBldg(), $day_of_week, $this->getId());
+                        $this->checkForConflicts($events);
+                    }
+                } else {
+                        $events = resDatePatternRoom($this->getStart(), $this->getEnd(), $this->getRoom(), $this->getBldg(), $this->getRec(), $this->getId());
+                        $this->checkForConflicts($events);
                 }
             } else {
                 $events = resDateRangeRoom($this->getStart(), $this->getEnd(), $this->getRoom(), $this->getBldg(), $this->getId());
@@ -229,7 +234,7 @@ class Event {
         {
             if (is_array($this->getRec())) {
                 foreach($this->getRec() as $rec) {
-                    $message .= date('l', $rec).' ';
+                    $message .= Event::retDayOfWeek($rec).' ';
                 }
             }
             else $message .= $this->getRecFormatted();

@@ -6,7 +6,8 @@ if (isset ($_POST['redir'])) {
     $redir = 'home.php';
 }
 auth_page(basename(__FILE__), $redir);
-
+//print_r($$_POST);
+//die();
 begin_transaction();
 $event = new Event();
 try {
