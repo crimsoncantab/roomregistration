@@ -1,6 +1,6 @@
 <?
 require_once 'inc/html_temp.inc';
-template_start(basename(__FILE__), 'HRR', 'Available Rooms', '.');
+template_start(basename(__FILE__), 'HRR', 'Available Rooms', '.', true);
 ?>
 <div>
     <!--<? print_r($_SESSION) ?>
@@ -19,11 +19,11 @@ template_start(basename(__FILE__), 'HRR', 'Available Rooms', '.');
             $result=getCampusRooms($_GET['campus'],$_GET['capacity'],$_GET['projector']);
     }
     ?>
-    <form action="handle_req.php" method="post" id="handle_req">
+    <form action="handle_req.php" method="post" name="handle_req" id="handle_req">
         <input type="hidden" name="room" value="" />
         <input type="hidden" name="building" value="" />
-        <input type="hidden" name="month" value="" />
-        <input type="hidden" name="day" value="" />
+        <input type="hidden" name="month" value="<?echo $_GET['month'];?>" />
+        <input type="hidden" name="day" value="<?echo $_GET['day'];?>" />
         <input type="hidden" name="start_time" value="" />
         <input type="hidden" name="end_time" value="" />
         <span>Description:</span>
@@ -72,14 +72,14 @@ template_start(basename(__FILE__), 'HRR', 'Available Rooms', '.');
                     ?>
             </td>
             <td>
-                <select name="time<?echo $row_i;?>">
+                <select id="time<?echo $row_i;?>">
                     <option selected></option>
                         <?
                         $hrs=$_GET['duration']/60;
                         for($i=$GLOBALS['beg'];$i+$hrs<=$GLOBALS['end'];$i+=0.5) {
                             $s = $i;
                             $e = $i+$hrs;
-                            echo '<option value="'.$s.'$'.$e.'>';
+                            echo '<option value="'.$s.'$'.$e.'">';
                             echo $s;
                             echo ' - ';
                             echo $e;
@@ -90,7 +90,7 @@ template_start(basename(__FILE__), 'HRR', 'Available Rooms', '.');
             </td>
             <td>
                 <input type="button" value="Submit" name="submit"
-                       onclick="pop_sub_form('<?echo $row_i;?>', '<?echo $row['room_num'];?>', '<?echo $row['building'];?>','<?echo $row['month'];?>','<?echo $row['day'];?>')"/>
+                       onclick="pop_sub_form('<?echo $row_i;?>', '<?echo $row['room_num'];?>', '<?echo $row['building'];?>')"/>
             </td>
         </tr>
             <?

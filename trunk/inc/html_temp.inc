@@ -47,7 +47,7 @@ function template_start_html() {
     <body>
         <table id="master">
             <tr>
-                <th id="corner" />
+                <th id="corner"></th>
                 <th id="banner" class="trim">
                     <div id="login">
                             <?
