@@ -47,11 +47,9 @@ $query_update_res='UPDATE events SET room = ?, building = ?, start_time = FROM_U
 
 #find reservation(s) during certain time interval and for certain room
 #takes room and time interval
-#we add/subtract seconds because the BETWEEN comparison does <= and >=
-#if the enddate of one and begindate of another are the same, they do not conflict
 $query_events_date_range_room='SELECT * FROM events WHERE'.
-    ' ((FROM_UNIXTIME(?) BETWEEN start_time AND DATE_SUB(end_time, INTERVAL 1 SECOND))'.
-    ' OR (FROM_UNIXTIME(?) BETWEEN DATE_ADD(start_time, INTERVAL 1 SECOND) AND end_time))'.
+    ' FROM_UNIXTIME(?) < end_time'.
+    ' AND FROM_UNIXTIME(?) > start_time'.
     ' AND room=? AND building=? AND event_id != ?';
 
 

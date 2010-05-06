@@ -17,11 +17,14 @@ function template_start_html() {
 
 }
 
-function template_head($title) {
+function template_head($title, $include_js, $filename) {
 ?>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <link rel="stylesheet" type="text/css" href="css/style.css" />
+<?
+if ($include_js) echo '<script src="js/'.$filename.'.js"></script>';
+?>
         <title><? echo $title; ?></title>
     </head>
 <?
@@ -124,10 +127,10 @@ function template_end() {
 
 }
 
-function template_start($filename, $title, $banner, $redir) {
+function template_start($filename, $title, $banner, $redir, $include_js=false) {
         auth_page($filename, $redir);
 	template_start_html();
-	template_head($title);
+	template_head($title, $include_js, $filename);
 	template_start_body($banner);
 }
 ?>
