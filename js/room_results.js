@@ -1,4 +1,4 @@
-function pop_sub_form(i, room, building,month,day) {
+function pop_sub_form(i, room, building) {
     var select_el = document.getElementById('time'+i);
     var selected = select_el.options[select_el.selectedIndex].value;
     var dollar = selected.indexOf('$');
@@ -8,8 +8,6 @@ function pop_sub_form(i, room, building,month,day) {
     myform.end_time.value=selected.substr(dollar+1);
     myform.room.value = room;
     myform.building.value = building;
-    myform.month.value = month;
-    myform.day.value = day;
 
     myform.submit();
 
