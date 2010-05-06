@@ -10,9 +10,9 @@ function template_month_dropdown() {
     <option selected></option>
         <?
         for($i=1;$i<=12;$i++) {
-            echo "<option>";
+            echo '<option value="'.$i.'">';
             echo date('M',mktime(0, 0, 0, $i));
-            echo "</option>";
+            echo '</option>';
         }
         ?>
 </select>
