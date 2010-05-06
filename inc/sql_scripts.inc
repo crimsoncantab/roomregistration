@@ -114,7 +114,7 @@ function authUser($uid,$pwd) {
 	}
 	else
 	{
-		set_logged_in($uid,$data['name'], $data['role'], $data['write_events']);
+		set_logged_in($uid,$data['name'], $data['role'], $data['write_events'], $data['reserv_priority']);
 		return true;
 	}
 	
@@ -212,6 +212,11 @@ function currentUserRes()
             $events[] = new Event($row);
         }
 	return $events;
+}
+
+function delete_res($event_id) {
+        $query=$GLOBALS['query_remove_res'];
+        mysql_safe($query, array($event_id));
 }
 
 function add_res($room, $building, $desc, $start_time, $end_time, $priority=0) {

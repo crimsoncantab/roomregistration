@@ -20,7 +20,7 @@
 			$result=getCampusRooms($_GET['campus'],$_GET['capacity'],$_GET['projector']);
 	}
 ?>
-		<table border='1'><tr>
+		 <table class="visible"><tr>
 <?
 	for($i = 0; $i < mysql_num_fields($result); $i++)
 	{

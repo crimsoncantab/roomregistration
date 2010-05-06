@@ -6,9 +6,8 @@
 <div>
 All reservations.  Click on row to modify.
 <?
-        print_r($_SESSION);
 	$events=currentRes();
-        echo '<table border="1">';
+        echo '<table class="visible">';
         Event::getEventHeaderRow();
 
         foreach ($events as $event) {

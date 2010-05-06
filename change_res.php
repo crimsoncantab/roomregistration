@@ -7,16 +7,21 @@
 ?>
 <div>
 Use the following form to <? echo ($update) ? 'change the' : 'add a'; ?> reservation:
-<form action="handle_req.php" method="post" id="change_form">
 <?
 if ($update) {
 ?>
-    <table>
+    <form action="handle_req.php" method="POST">
+        <input type="hidden" name="event_id" value="<?echo $_GET['event_id']?>" />
+        <input type="hidden" name="delete" value="true" />
+        <input type="submit" value="Delete Event" name="submit_d" />
+    </form>
+    <table class="visible">
 <?
     Event::getEventHeaderRow();
-    $event->getHtmlRow();
+    $event->getHtmlRow(false);
 ?>
     </table>
+<form action="handle_req.php" method="post" id="change_form">
     <input type="hidden" name="event_id" value="<?echo $_GET['event_id']?>" />
 <?
 }
@@ -45,6 +50,19 @@ if ($update) {
             }
 ?>
     </select>
+    Priority:
+    <select name="priority">
+            <option selected></option>
+<?
+            for($i=1;$i<=$_SESSION['max_priority'];$i++)
+            {
+                    echo '<option value="'.$i.'">';
+                    echo $i;
+                    echo '</option>';
+            }
+?>
+    </select>
+    <br />
     Room:
     <select name="room">
             <option selected></option>
@@ -65,11 +83,13 @@ if ($update) {
             }
 ?>
     </select>
+    <br />
 <?
 if (!$update) {
     ?>
     Description:
     <input type="text" name="description" value="" />
+    <br />
 <?
 }
 ?>
@@ -97,6 +117,7 @@ if (!$update) {
             }
 ?>
     </select>
+    <br />
     <input type="submit" value="Submit" name="submit" />
 </form>
 </div>
