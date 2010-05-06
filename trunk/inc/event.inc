@@ -1,5 +1,6 @@
 <?
 require_once 'util.inc';
+require_once 'sql_scripts.inc';
 class Event {
     private $data;
     private $has_conflicts;
@@ -9,7 +10,7 @@ class Event {
         echo '<tr>'.
                 '<th>User</th><th>Room</th><th>Building</th>'.
                 '<th>Request Time</th><th>Desc</th><th>Start Time</th>'.
-                '<th>End Time</th><th>Priority</th></tr>';//<th>Recurrence Pattern</th>
+                '<th>End Time</th><th>Priority</th><th>Recurrence Pattern</th></tr>';
     }
     public function  __construct($sql_row=false, $change_from_post = false) {
         $this->to_evict = array();
@@ -23,6 +24,18 @@ class Event {
     }
 
     public function change_from_post() {
+        print_r($_POST);
+        $id = $this->getId();
+        if (!isset($id)) { #this is a new event
+            $this->data['huid'] = $_SESSION['uid'];
+            $this->data['event_id'] = NULL;
+            #can't change recurring on old events
+            if (isset ($_POST['recurring'])) {
+                $this->data['recurring']=$_POST['recurring'];
+            } else {
+                $this->data['recurring'] = 0;
+            }
+        }
         if (isset ($_POST['description'])) {
             $this->data['description'] = $_POST['description'];
         }
@@ -38,8 +51,6 @@ class Event {
             }
         }
         if (isset ($_POST['start_time'])) {
-            $month= $_POST['month'];
-            $day = $_POST['day'];
             $start = $_POST['start_time'];
             $end = $_POST['end_time'];
             if ($start == $end) throw new Exception('Start and End Date cannot be the same');
@@ -48,15 +59,21 @@ class Event {
                 $end = $start;
                 $start = $temp;
             }
-            if ($start < $GLOBALS['beg'] || $end > $GLOBALS['end'] || $month < 1 ||
-                    $month > 12 || $day < 1 || $day > 31) throw new Exception('Dates out of range.');
-            $this->data['start_time'] = mktime((int)$start, (int)(($start-floor($start)) * 60), 0, $month, $day);
-            $this->data['end_time'] = mktime((int)$end, (int)(($end-floor($end)) * 60), 0, $month, $day);
-        }
-        $id = $this->getId();
-        if (!isset($id)) { #this is a new event
-            $this->data['huid'] = $_SESSION['uid'];
-            $this->data['event_id'] = NULL;
+            if ($start < $GLOBALS['beg'] || $end > $GLOBALS['end']) throw new Exception('Dates out of range.');
+            $start_min = (int)(($start-floor($start)) * 60);
+            $start = (int) $start;
+            $end_min = (int)(($end-floor($end)) * 60);
+            $end = (int) $end;
+            if ($this->isRecurring()) {
+                $this->data['start_time'] = mktime($start, $start_min, 0, 0, 0, 0);
+                $this->data['end_time'] = mktime($end, $end_min, 0, 0, 0, 0);
+            } else {
+                $month= $_POST['month'];
+                $day = $_POST['day'];
+                if ($month < 1 || $month > 12 || $day < 1 || $day > 31) throw new Exception('Dates out of range.');
+                $this->data['start_time'] = mktime($start, $start_min, 0, $month, $day);
+                $this->data['end_time'] = mktime($end, $end_min, 0, $month, $day);
+            }
         }
     }
 
@@ -109,6 +126,10 @@ class Event {
         return $this->data['recurring'];
     }
 
+    public function isRecurring() {
+        return $this->data['recurring'] != 0;
+    }
+
     public function getHtmlRow($use_default_edit=true) {
         echo '<tr';
         if ($use_default_edit && can_edit_res($this->getUser())) {
@@ -116,30 +137,41 @@ class Event {
         }
         echo '><td>'.$this->getUser().'</td><td>'.$this->getRoom().'</td><td>'.$this->getBldg().'</td>'.
                 '<td>'.$this->getReqDate().'</td><td>'.$this->getDesc().'</td><td>'.$this->getStart().'</td>'.
-                '<td>'.$this->getEnd().'</td><td>'.$this->getPriority().'</td></tr>';//<td>'.$this->getRec().'</td>
+                '<td>'.$this->getEnd().'</td><td>'.$this->getPriority().'</td><td>'.$this->getRec().'</td></tr>';
+    }
+
+    private function checkForConflicts($events) {
+        foreach ($events as $event) {
+            if ($event->getPriority() < $this->getPriority()
+                    && ($this->isRecurring() || !$event->isRecurring())) {
+                $this->to_evict[] = $event;
+            } else {
+                throw new Exception('Time not available.');
+            }
+        }
     }
 
     #only true if we can't evict someone
-    public function hasConflicts() {
+    private function hasConflicts() {
         if (!isset($this->has_conflicts)) { //do logic only once
-            $events = resDateRangeRoom($this->getStart(), $this->getEnd(), $this->getRoom(), $this->getBldg(), $this->getId());
-//            print_r($events);die();
-            foreach ($events as $event) {
-                if ($event->getPriority() < $this->getPriority()) {
-                    $this->to_evict[] = $event;
-                } else {
-                    $this->has_conflicts = true;
-                    break;
+            if ($this->isRecurring()) {
+                foreach ($this->getRec() as $day_of_week) {
+                    $events = resDatePatternRoom($this->getStart(), $this->getEnd(), $this->getRoom(), $this->getBldg(), $day_of_week, $this->getId());
+                    $this->checkForConflicts($events);
                 }
+            } else {
+                $events = resDateRangeRoom($this->getStart(), $this->getEnd(), $this->getRoom(), $this->getBldg(), $this->getId());
+                $this->checkForConflicts($events);
             }
         }
+        $this->has_conflicts = false;
         return $this->has_conflicts;
     }
 
 
     public function delete() {
         delete_res($this->getId());
-        #notify user
+        $this->notify_user('deleted');
     }
     public function persist() {
 
@@ -148,10 +180,11 @@ class Event {
                 $event->delete();
             }
             if ($this->exists_in_db()) {
-                update_res($this->getId(), $this->getRoom(), $this->getBldg(), $this->getStart(), $this->getEnd());
+                update_res($this);
+                $this->notify_user('modified');
             } else {
-                add_res($this->getRoom(), $this->getBldg(), $this->getDesc(), $this->getStart(), $this->getEnd(), $this->getPriority());
-                $this->data['event_id'] = get_last_id();
+                $this->data['event_id'] = add_res($this);
+                $this->notify_user('added');
             }
         } else {
             throw new Exception('Conflicts with other events');
@@ -161,6 +194,18 @@ class Event {
         return $this->getId();
     }
 
+
+    private function notify_user($operation) {
+        $message = 'The following event has been '.$operation.':\n';
+        $message .= 'Description: '.$this->getDesc().'\n';
+        $message .= 'Time: '.$this->getStart().' to '.$this->getEnd().'\n';
+        $message .= 'Room: '.$this->getRoom().' Building: '.$this->getBldg().'\n\n';
+        if ($this->isRecurring()) $message .= 'Recurrence Pattern: '.$this->getRec();
+        $message .= 'The user that '.$operation.' the event: '.$_SESSION['username'];
+
+        $subj = 'Room Reservation - event '.$operation;
+        email($subj, $this->getUser(), $message);
+    }
 }
 
 ?>
