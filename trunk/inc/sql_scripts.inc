@@ -104,7 +104,7 @@ $query_add_res='INSERT INTO events(huid,room,building,date_req,description,start
 $query_remove_res='DELETE FROM events WHERE event_id = ?';
 
 #update reservation
-$query_update_res='UPDATE events SET room = ?, building = ?, start_time = FROM_UNIXTIME(?), end_time = FROM_UNIXTIME(?) WHERE event_id = ?';
+$query_update_res='UPDATE events SET room = ?, building = ?, start_time = FROM_UNIXTIME(?), end_time = FROM_UNIXTIME(?), description = ?, priority = ? WHERE event_id = ?';
 
 
 #for finding conflicts.  $ignore_id is for when we update an event,
@@ -257,7 +257,6 @@ function delete_res($event_id) {
     mysql_safe($query, array($event_id));
 }
 
-//function add_res($room, $building, $desc, $start_time, $end_time, $priority=0, $recurring=NULL) {
 function add_res($event) {
     $query=$GLOBALS['query_add_res'];
     $params = array($_SESSION['uid'],
@@ -279,7 +278,7 @@ function add_res($event) {
 function update_res($event) {
     $query=$GLOBALS['query_update_res'];
     $params = array($event->getRoom(), $event->getBldg(),
-            $event->getStart(), $event->getEnd(), $event->getId());
+            $event->getStart(), $event->getEnd(), $event->getDesc(), $event->getPriority(), $event->getId());
     mysql_safe($query, $params);
 }
 

@@ -37,7 +37,7 @@ class Event {
                 $this->data['recurring'] = 0;
             }
         }
-        if (isset ($_POST['description'])) {
+        if (isset ($_POST['description']) && $_POST['description']!='') {
             $this->data['description'] = $_POST['description'];
         }
         if (isset ($_POST['priority'])) {
@@ -45,9 +45,9 @@ class Event {
             $priority = min(array(max(array($priority, 1)), $_SESSION['max_priority']));
             $this->data['priority'] = $priority;
         }
-        if (isset ($_POST['room'])) {
+        if (isset ($_POST['room']) && $_POST['room']!='') {
             $this->data['room'] = $_POST['room'];
-            if (isset ($_POST['building'])) {
+            if (isset ($_POST['building']) && $_POST['building']!='') {
                 $this->data['building'] = $_POST['building'];
             }
         }
