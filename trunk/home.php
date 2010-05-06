@@ -6,7 +6,7 @@
     Your current reservations.  Click on a reservation to edit it.
 <?
 	$events=currentUserRes();
-        echo '<table border="1">';
+        echo '<table class="visible">';
         Event::getEventHeaderRow();
 
         foreach ($events as $event) {

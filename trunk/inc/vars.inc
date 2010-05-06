@@ -12,4 +12,7 @@
 
         $no_user_perm = '0';
 
+        $beg=7;
+        $end=23;
+
 ?>

@@ -2,8 +2,6 @@
 
 require_once 'db_init.inc';
 
-$beg=7;
-$end=23;
 
 #session stuff
 session_start();
@@ -15,11 +13,12 @@ function is_logged_in() {
     return isset ($_SESSION['uid']);
 }
 
-function set_logged_in($uid,$username,$role,$can_edit) {
+function set_logged_in($uid,$username,$role,$can_edit,$max_priority) {
 	$_SESSION['uid'] = $uid;
 	$_SESSION['username'] = $username;
 	$_SESSION['perm'] = $role;
         $_SESSION['can_edit'] = $can_edit;
+        $_SESSION['max_priority'] = $max_priority;
 }
 
 function get_user_perm() {
