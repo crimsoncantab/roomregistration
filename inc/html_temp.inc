@@ -4,7 +4,20 @@ require_once 'util.inc';
 require_once 'db_init.inc';
 require_once 'sql_scripts.inc';
 require_once 'inc/event.inc';
-
+function template_month_dropdown() {
+    ?>
+<select name="month">
+    <option selected></option>
+        <?
+        for($i=1;$i<=12;$i++) {
+            echo "<option>";
+            echo date('M',mktime(0, 0, 0, $i));
+            echo "</option>";
+        }
+        ?>
+</select>
+    <?
+}
 function template_start_html() {
 
 
@@ -12,6 +25,14 @@ function template_start_html() {
 <<??>?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+
+    <!--So it's a bad idea to leave these here in the future, but good debugging technique
+    without making pages look crappy:
+        <?
+        print_r($_SESSION);
+        print_r($_PUT);
+        print_r($_GET) ?>
+    -->
         <?
 
 
@@ -21,6 +42,8 @@ function template_start_html() {
         ?>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="favicon.ico" type="image/x-icon" />
         <link rel="stylesheet" type="text/css" href="css/style.css" />
             <?
             if ($include_js) echo '<script src="js/'.basename($filename,'.php').'.js"></script>';

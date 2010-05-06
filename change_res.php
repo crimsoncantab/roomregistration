@@ -29,16 +29,7 @@ if ($update) echo '<input type="hidden" name="event_id" value="'.$_GET['event_id
 if (!($update && $event->isRecurring())) {
 ?>
         Month:
-        <select name="month">
-            <option selected></option>
-            <?
-            for($i=1;$i<=12;$i++) {
-                echo '<option value="'.$i.'">';
-                echo $i;
-                echo '</option>';
-            }
-            ?>
-        </select>
+        <?template_month_dropdown();?>
         Day:
         <select name="day">
             <option selected></option>

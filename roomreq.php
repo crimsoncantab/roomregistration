@@ -3,7 +3,7 @@ require_once 'inc/html_temp.inc';
 template_start(basename(__FILE__), 'HRR', 'Request a Room', '.');
 ?>
 <div>
-    <? print_r($_SESSION) ?><br/>
+    <br/>
     Enter search criteria (* required):
     <form action="room_results.php" method="get" id="room_form">
         <table>
@@ -29,20 +29,11 @@ template_start(basename(__FILE__), 'HRR', 'Request a Room', '.');
             </tr>
             <tr>
                 <td>*Day: 
-                    <select name="month">
-                        <option selected></option>
-<?
-                        for($i=1;$i<=12;$i++) {
-                            echo "<option>";
-                            echo $i;
-                            echo "</option>";
-                        }
-                        ?>
-                    </select>
+                    <?template_month_dropdown();?>
                     <select name="day">
                         <option selected></option>
-<?
-for($i=1;$i<=31;$i++) {
+                        <?
+                        for($i=1;$i<=31;$i++) {
                             echo "<option>";
                             echo $i;
                             echo "</option>";
@@ -52,9 +43,21 @@ for($i=1;$i<=31;$i++) {
                 </td>
             </tr>
             <tr>
-                <td>*Recurring: 
-                    <input type="radio" name="recurring" value="false" checked>No
-                    <input type="radio" name="recurring" value="true">Yes
+                <td>
+                    <?
+                    if (!$update) {
+                        ?>
+                    Recurrence (if checked, ignores Day):
+                    S<input type="checkbox" name="recurring[]" value="1" />
+                    |M<input type="checkbox" name="recurring[]" value="2" />
+                    |T<input type="checkbox" name="recurring[]" value="3" />
+                    |W<input type="checkbox" name="recurring[]" value="4" />
+                    |Th<input type="checkbox" name="recurring[]" value="5" />
+                    |F<input type="checkbox" name="recurring[]" value="6" />
+                    |Sa<input type="checkbox" name="recurring[]" value="7" />
+                        <?
+                    }
+                    ?>
                 </td>
             </tr>
             <tr>
@@ -67,9 +70,9 @@ for($i=1;$i<=31;$i++) {
                 <td>Campus
                     <select name="campus">
                         <option selected></option>
-<?
-$result=getCampusRegions();
-while($row = mysql_fetch_array($result)) {
+                        <?
+                        $result=getCampusRegions();
+                        while($row = mysql_fetch_array($result)) {
                             echo "<option value='".$row['id']."'>";
                             echo $row['name'];
                             echo "</option>";
@@ -82,10 +85,10 @@ while($row = mysql_fetch_array($result)) {
                 <td>Building
                     <select name="building">
                         <option selected></option>
-<?
-$result=getBuildings();
-while($row = mysql_fetch_array($result)) {
-    echo "<option value='".$row['id']."'>";
+                        <?
+                        $result=getBuildings();
+                        while($row = mysql_fetch_array($result)) {
+                            echo "<option value='".$row['id']."'>";
                             echo $row['name'];
                             echo "</option>";
                         }
