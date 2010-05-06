@@ -1,6 +1,6 @@
 <?
-	require_once 'inc/html_temp.inc';
-        template_start(basename(__FILE__), 'HRR', '', 'home.php');
+require_once 'inc/html_temp.inc';
+template_start(basename(__FILE__), 'HRR', '', 'home.php');
 ?>
 
 <div>
@@ -8,5 +8,5 @@
 </div>
 
 <?
-	template_end();
+template_end();
 ?>
